@@ -22,7 +22,7 @@
 #include <jnxc_headers/jnxlog.h>
 #include <jnxc_headers/jnxfile.h>
 
-enum instruction_type { TEXTURE_DATA, LOC_X, LOC_Y, HEALTH, ROTATION } instruction_type;
+enum instruction_type { OBJECT_TYPE, TEXTURE_DATA, LOC_X, LOC_Y, HEALTH, ROTATION } instruction_type;
 char *strip_newline(char *s)
 {
 	char *p2 = s;
@@ -52,6 +52,10 @@ data_object* process_line(char *line)
 			temp[counter] = '\0';
 			switch(instruction_number)
 			{
+				case OBJECT_TYPE:
+					data->object_type = malloc(strlen(temp));
+					strcpy(data->object_type,temp);
+					break;
 				case TEXTURE_DATA:
 					data->texture_data_path = malloc(strlen(temp));
 					strcpy(data->texture_data_path,temp);

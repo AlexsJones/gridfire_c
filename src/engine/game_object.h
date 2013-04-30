@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  object_builder.h
+ *       Filename:  game_object.h
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  04/26/13 16:00:56
+ *        Created:  04/27/13 19:57:32
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,11 +15,17 @@
  *
  * =====================================================================================
  */
-#ifndef __OBJECT_BUILDER_H__
-#define __OBJECT_BUILDER_H__
+#ifndef __GAME_OBJECT_H__
+#define __GAME_OBJECT_H__
 #include <SFML/Graphics.h>
 #include <SFML/Window.h>
-#include "game_object.h"
-
-game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation);
+typedef struct game_object{
+	sfSprite *sprite;
+	sfVector2f position;
+	int health;
+	float rotation;
+	char *object_type;
+	float velocity;
+}game_object;
+void game_object_update(game_object *obj, sfEvent event);
 #endif

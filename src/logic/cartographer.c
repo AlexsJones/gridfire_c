@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  object_builder.h
+ *       Filename:  cartographer.c
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  04/26/13 16:00:56
+ *        Created:  04/28/13 21:10:33
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,11 +15,10 @@
  *
  * =====================================================================================
  */
-#ifndef __OBJECT_BUILDER_H__
-#define __OBJECT_BUILDER_H__
-#include <SFML/Graphics.h>
-#include <SFML/Window.h>
-#include "game_object.h"
+#include <stdlib.h>
+#include "cartographer.h"
 
-game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation);
-#endif
+stellarmap *cartographer_seed(int map_size)
+{
+	
+}

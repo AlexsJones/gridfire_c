@@ -17,22 +17,26 @@
  */
 #include <stdlib.h>
 #include "engine/object_builder.h"
+#include "engine/game_object.h"
+#include "logic/cartographer.h"
 #include "game.h"
 #include "utils/config_parser.h"
 #include <jnxc_headers/jnxlog.h>
 #include <jnxc_headers/jnxlist.h>
+#include <string.h>
 #include <stdio.h>
 sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
+stellarmap *stellar_map;
 jnx_list *draw_queue;
 int game_setup()
 {
 	videomode = sfVideoMode_getDesktopMode();
 	jnx_log("Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
-	sfRenderWindow_setFramerateLimit(main_window,60);
+	sfRenderWindow_setFramerateLimit(main_window,30);
 	main_view = sfView_create();
 	sfVector2f view_size;
 	view_size.x = videomode.width;
@@ -41,6 +45,8 @@ int game_setup()
 	clear_color = sfColor_fromRGB(0,0,0);
 	draw_queue = jnx_list_init();
 	jnx_log("Initial setup complete\n");	
+	stellar_map = cartographer_seed(1000);
+	jnx_log("Map created\n");
 	return 0;
 }
 int game_load(char *configuration_path)
@@ -59,12 +65,11 @@ int game_load(char *configuration_path)
 		 *  Here we transfer ownership from the configuration list to the draw queue
 		 *  This also involves a conversion element to produce a sprite object
 		 *-----------------------------------------------------------------------------*/
-		game_object *game_obj = object_builder_create(obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation);
+		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation);
 		jnx_list_add(draw_queue,(void*)game_obj);
-			
 		head = head->next_node;
 	}
-	
+
 	jnx_list_delete(configuration_list);
 	head = NULL;
 
@@ -88,7 +93,7 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Set the current view
 		 *-----------------------------------------------------------------------------*/
-
+		sfRenderWindow_setView(main_window,main_view);
 		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
@@ -96,6 +101,11 @@ void game_run()
 		while(current_draw_pos)
 		{
 			game_object *obj = (game_object*)current_draw_pos->_data;
+			if(strcmp(obj->object_type,"player") == 0)
+			{
+				game_object_update(obj,current_event);				
+				sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
+			}
 			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 			current_draw_pos = current_draw_pos->next_node;
 		}

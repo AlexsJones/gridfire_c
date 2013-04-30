@@ -20,6 +20,7 @@
 #include <jnxc_headers/jnxlist.h>
 typedef struct data_object
 {
+	char *object_type;
 	char *texture_data_path;
 	int x;
 	int y;
