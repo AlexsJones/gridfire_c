@@ -120,6 +120,14 @@ void game_run()
 				game_object_update(obj,current_event);				
 				sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
 			}
+			else
+			{
+				
+				/*-----------------------------------------------------------------------------
+				 *  Update AI objects
+				 *-----------------------------------------------------------------------------*/
+			
+			}
 			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 			current_draw_pos = current_draw_pos->next_node;
 		}

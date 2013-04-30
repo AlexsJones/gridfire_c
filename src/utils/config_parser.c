@@ -44,7 +44,10 @@ data_object* process_line(char *line)
 	int instruction_number = 0;
 	while(*head_line !='\0')
 	{
-
+		if(*head_line == '#') // This is a comment line so ignore
+		{
+			continue;
+		}
 		if(*head_line == ',' || *(head_line+1) == '\0')
 		{
 			char temp[counter];
