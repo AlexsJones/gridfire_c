@@ -77,7 +77,13 @@ int game_load(char *configuration_path)
 		cartographer_add(game_obj);
 		head = head->next_node;
 	}
-
+	while(configuration_list->head)
+	{
+		jnx_node *current_head = configuration_list->head;
+		jnx_node *next_node = configuration_list->head->next_node;
+		free(current_head);
+		configuration_list->head = next_node;
+	}
 	jnx_list_delete(configuration_list);
 	head = NULL;
 
