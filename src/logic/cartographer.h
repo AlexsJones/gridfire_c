@@ -18,13 +18,7 @@
 #ifndef __CARTOGRAPHER_H__
 #define __CARTOGRAPHER_H__
 #include "../engine/game_object.h"
-typedef struct
-{
-	void **mapx;
-	void **mapy;	
-}stellarmap;
-
-stellarmap *cartographer_seed(int map_size);
-void cartographer_add(void);
-
+#include <jnxc_headers/jnxlist.h>
+void cartographer_add(game_object *obj);
+jnx_list *cartographer_get_at(sfVector2f position);
 #endif

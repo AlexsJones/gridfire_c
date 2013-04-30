@@ -29,8 +29,11 @@ sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
-stellarmap *stellar_map;
-jnx_list *draw_queue;
+
+/*-----------------------------------------------------------------------------
+ *  Player handle for view and camera purposes
+ *-----------------------------------------------------------------------------*/
+game_object *player = NULL;
 int game_setup()
 {
 	videomode = sfVideoMode_getDesktopMode();
@@ -43,10 +46,7 @@ int game_setup()
 	view_size.y = videomode.height;
 	sfView_setSize(main_view,view_size);
 	clear_color = sfColor_fromRGB(0,0,0);
-	draw_queue = jnx_list_init();
 	jnx_log("Initial setup complete\n");	
-	stellar_map = cartographer_seed(1000);
-	jnx_log("Map created\n");
 	return 0;
 }
 int game_load(char *configuration_path)
@@ -66,12 +66,26 @@ int game_load(char *configuration_path)
 		 *  This also involves a conversion element to produce a sprite object
 		 *-----------------------------------------------------------------------------*/
 		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation);
-		jnx_list_add(draw_queue,(void*)game_obj);
+		
+		/*-----------------------------------------------------------------------------
+		 *  Setup a pointer to player
+		 *-----------------------------------------------------------------------------*/
+		if(strcmp(game_obj->object_type,"player") == 0)
+		{
+			player = game_obj;
+		}	
+		cartographer_add(game_obj);
 		head = head->next_node;
 	}
 
 	jnx_list_delete(configuration_list);
 	head = NULL;
+
+	if(player == NULL)
+	{
+		jnx_log("Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
+		return 1;
+	}
 
 	jnx_log("Done\n");
 	return 0;
@@ -97,7 +111,7 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
-		jnx_node *current_draw_pos = draw_queue->head;
+		jnx_node *current_draw_pos = cartographer_get_at(player->position)->head; 
 		while(current_draw_pos)
 		{
 			game_object *obj = (game_object*)current_draw_pos->_data;
