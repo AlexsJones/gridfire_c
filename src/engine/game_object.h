@@ -30,5 +30,5 @@ typedef struct game_object{
 	float velocity;
 	object_state state;
 }game_object;
-void game_object_update(game_object *obj, sfEvent event, float elapsed_time);
+void game_object_update(game_object *obj, sfEvent event,sfView *view);
 #endif

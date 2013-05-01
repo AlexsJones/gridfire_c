@@ -29,7 +29,7 @@
 #include <stdio.h>
 
 #define GAMEBOUNDSSIZE 25000
-#define STARFIELDDENSITY 90000
+#define STARFIELDDENSITY 100000
 
 sfVideoMode videomode;
 sfRenderWindow *main_window;
@@ -143,7 +143,7 @@ void game_run()
 			game_object *obj = (game_object*)current_draw_pos->_data;
 			if(strcmp(obj->object_type,"player") == 0)
 			{
-				game_object_update(obj,current_event,current_time);				
+				game_object_update(obj,current_event,main_view);				
 				sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
 			}
 			else

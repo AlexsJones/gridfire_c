@@ -21,6 +21,8 @@
 #include "starfield.h"
 #include "../utils/geometry.h"
 #include <jnxc_headers/jnxlist.h>
+
+#define DRAWBOUNDS 2000
 jnx_list *star_field_list = NULL;
 void starfield_create(square *bounds,int density)
 {
@@ -67,7 +69,7 @@ void starfield_draw(sfRenderWindow *window,sfVector2f player_position)
 		float x = sfSprite_getPosition(current).x;
 		float y = sfSprite_getPosition(current).y;
 
-		if(x > player_position.x - 1000 && x < player_position.x + 1000 && y > player_position.y - 1000 && y < player_position.y +1000){	
+		if(x > player_position.x - DRAWBOUNDS && x < player_position.x + DRAWBOUNDS && y > player_position.y - DRAWBOUNDS && y < player_position.y +DRAWBOUNDS){	
 
 			sfRenderWindow_drawSprite(window,current,NULL);
 		}

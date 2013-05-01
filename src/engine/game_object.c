@@ -22,25 +22,33 @@
 #include "../logic/cartographer.h"
 #include "game_object.h"
 #include <string.h>
-void game_object_update(game_object *obj, sfEvent event,float elapsed_time)
+void game_object_update(game_object *obj, sfEvent event,sfView *view)
 {
 	if(strcmp("player",obj->object_type) == 0)
 	{
 		if(sfKeyboard_isKeyPressed(sfKeyW))
 		{
-			obj->velocity = obj->velocity + 0.6f * elapsed_time;
+			obj->velocity = obj->velocity + 0.3f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyS))
 		{
-			obj->velocity = obj->velocity - 0.6f * elapsed_time;
+			obj->velocity = obj->velocity - 0.3f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyA))
 		{
-			obj->rotation = obj->rotation - 0.6f * elapsed_time;
+			obj->rotation = obj->rotation - 0.2f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyD))
 		{
-			obj->rotation = obj->rotation + 0.6f * elapsed_time;
+			obj->rotation = obj->rotation + 0.2f;
+		}
+		if(sfKeyboard_isKeyPressed(sfKeyZ))
+		{
+			sfView_zoom(view,.9f);
+		}
+		if(sfKeyboard_isKeyPressed(sfKeyX))
+		{
+			sfView_zoom(view,1.1f);
 		}
 		sfSprite_rotate(obj->sprite,obj->rotation);
 		sfVector2f move_offset;
@@ -57,29 +65,29 @@ void game_object_update(game_object *obj, sfEvent event,float elapsed_time)
 			 *  Off the map!
 			 *-----------------------------------------------------------------------------*/
 		}
-
 		if(obj->velocity > 0.0f)
 		{
-			obj->velocity = obj->velocity - 0.1f * elapsed_time;
+			obj->velocity = obj->velocity - 0.1f;
 		}
 		if(obj->velocity < 0.0f)
 		{
-			obj->velocity = obj->velocity + 0.1f * elapsed_time;
+			obj->velocity = obj->velocity + 0.1f;
 		}
 		if(obj->rotation > 0.0f)
 		{
-			obj->rotation = obj->rotation - 0.1 * elapsed_time;
+			obj->rotation = obj->rotation - 0.1;
 		}
-		if(obj->rotation <  0.0f)
+		if(obj->rotation < 0.0f)
 		{
-			obj->rotation = obj->rotation + 0.1 * elapsed_time;
+			obj->rotation = obj->rotation + 0.1;
 		}
 
-	}
-	else
-	{
-		/*-----------------------------------------------------------------------------
-		 *  AI movement
-		 *-----------------------------------------------------------------------------*/
-	}
+
+}
+else
+{
+	/*-----------------------------------------------------------------------------
+	 *  AI movement
+	 *-----------------------------------------------------------------------------*/
+}
 }
