@@ -19,7 +19,7 @@
 #include "object_builder.h"
 #include <string.h>
 #include <stdio.h>
-game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation)
+game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation, float velocity)
 {
 	game_object *obj = malloc(sizeof(game_object));
 	obj->sprite = sfSprite_create();
@@ -42,10 +42,28 @@ game_object *object_builder_create(char *object_type, char *texture_data,int x, 
 	 *  Set object type
 	 *-----------------------------------------------------------------------------*/
 	obj->object_type = object_type;
+	
 	/*-----------------------------------------------------------------------------
 	 * Set object velocity  
 	 *-----------------------------------------------------------------------------*/
-	obj->velocity = 0.0f;
+	obj->velocity = velocity;
+	
+	if(strcmp(obj->object_type,"player") == 0)
+	{
+		obj->state = PLAYER;
+	}
+	else if(obj->velocity >= 0)
+	{
+		obj->state = STATIONARY;
+	}
+	else
+	{
+		obj->state = MOVING;
+	}
+	
+	/*-----------------------------------------------------------------------------
+	 *  Will later accomodate for ships starting moving
+	 *-----------------------------------------------------------------------------*/
 	sfTexture *_texture = sfTexture_createFromFile(texture_data,NULL);
 	sfSprite_setTexture(obj->sprite,_texture,1);
 	sfSprite_setPosition(obj->sprite,obj->position);

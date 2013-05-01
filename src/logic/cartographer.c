@@ -20,6 +20,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnxlog.h>
+square *bounds_map = NULL;
 
 jnx_list *object_list;
 void cartographer_add(game_object *obj)
@@ -41,4 +43,18 @@ jnx_list *cartographer_get_at(sfVector2f position)
 	 *  Note, that you probably don't want to return the original list ever as any manipulation outside of this functionality could cause error
 	 *-----------------------------------------------------------------------------*/
 	return object_list;
+}
+void cartographer_setbounds(int top, int bottom, int left, int right)
+{
+	bounds_map = malloc(sizeof(square));
+	bounds_map->top = top;
+	bounds_map->bottom = bottom;
+	bounds_map->left = left;
+	bounds_map->right = right;
+	jnx_log("Set new bounds map\n");
+}
+square *cartographer_getbounds(void)
+{
+	if(bounds_map == NULL) { jnx_log("Error getting bounds - no map set\n");return NULL; }
+	return bounds_map;
 }

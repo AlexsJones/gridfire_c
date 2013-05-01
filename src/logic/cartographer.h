@@ -18,7 +18,13 @@
 #ifndef __CARTOGRAPHER_H__
 #define __CARTOGRAPHER_H__
 #include "../engine/game_object.h"
+#include "../utils/geometry.h"
 #include <jnxc_headers/jnxlist.h>
+
+
+
+void cartographer_setbounds(int top, int bottom, int left, int right);
+square *cartographer_getbounds(void);
 void cartographer_add(game_object *obj);
 jnx_list *cartographer_get_at(sfVector2f position);
 #endif

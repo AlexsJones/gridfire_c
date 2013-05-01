@@ -20,6 +20,7 @@
 #include "engine/game_object.h"
 #include "logic/cartographer.h"
 #include "game.h"
+#include "logic/game_ai.h"
 #include "utils/config_parser.h"
 #include <jnxc_headers/jnxlog.h>
 #include <jnxc_headers/jnxlist.h>
@@ -29,7 +30,7 @@ sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
-
+sfClock *clock;
 /*-----------------------------------------------------------------------------
  *  Player handle for view and camera purposes
  *-----------------------------------------------------------------------------*/
@@ -46,6 +47,10 @@ int game_setup()
 	view_size.y = videomode.height;
 	sfView_setSize(main_view,view_size);
 	clear_color = sfColor_fromRGB(0,0,0);
+	jnx_log("Creating game clock\n");
+	clock = sfClock_create();
+	jnx_log("Creating bounding map\n");
+	cartographer_setbounds(0,5000,0,5000);
 	jnx_log("Initial setup complete\n");	
 	return 0;
 }
@@ -65,8 +70,8 @@ int game_load(char *configuration_path)
 		 *  Here we transfer ownership from the configuration list to the draw queue
 		 *  This also involves a conversion element to produce a sprite object
 		 *-----------------------------------------------------------------------------*/
-		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation);
-		
+		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation,obj->velocity);
+
 		/*-----------------------------------------------------------------------------
 		 *  Setup a pointer to player
 		 *-----------------------------------------------------------------------------*/
@@ -102,6 +107,9 @@ void game_run()
 	sfEvent current_event;
 	while(sfRenderWindow_isOpen(main_window))
 	{
+		sfTime time = sfClock_getElapsedTime(clock);
+		float current_time = sfTime_asSeconds(time);
+		
 		sfRenderWindow_pollEvent(main_window,&current_event);
 		switch(current_event.key.code)
 		{
@@ -117,22 +125,21 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
-		jnx_node *current_draw_pos = cartographer_get_at(player->position)->head; 
+		jnx_node *current_draw_pos = cartographer_get_at(sfView_getCenter(main_view))->head; 
 		while(current_draw_pos)
 		{
 			game_object *obj = (game_object*)current_draw_pos->_data;
 			if(strcmp(obj->object_type,"player") == 0)
 			{
-				game_object_update(obj,current_event);				
+				game_object_update(obj,current_event,current_time);				
 				sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
 			}
 			else
 			{
-				
 				/*-----------------------------------------------------------------------------
 				 *  Update AI objects
 				 *-----------------------------------------------------------------------------*/
-			
+				game_ai_update(obj);	
 			}
 			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 			current_draw_pos = current_draw_pos->next_node;

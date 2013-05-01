@@ -1,4 +1,5 @@
 /*
+				
  * =====================================================================================
  *
  *       Filename:  game_object.h
@@ -19,6 +20,7 @@
 #define __GAME_OBJECT_H__
 #include <SFML/Graphics.h>
 #include <SFML/Window.h>
+typedef enum { PLAYER,STATIONARY, MOVING, COMBAT } object_state;
 typedef struct game_object{
 	sfSprite *sprite;
 	sfVector2f position;
@@ -26,6 +28,7 @@ typedef struct game_object{
 	float rotation;
 	char *object_type;
 	float velocity;
+	object_state state;
 }game_object;
-void game_object_update(game_object *obj, sfEvent event);
+void game_object_update(game_object *obj, sfEvent event, float elapsed_time);
 #endif

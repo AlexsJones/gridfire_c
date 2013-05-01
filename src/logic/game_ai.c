@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  object_builder.h
+ *       Filename:  game_ai.c
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  04/26/13 16:00:56
+ *        Created:  04/30/13 17:04:39
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,11 +15,21 @@
  *
  * =====================================================================================
  */
-#ifndef __OBJECT_BUILDER_H__
-#define __OBJECT_BUILDER_H__
-#include <SFML/Graphics.h>
-#include <SFML/Window.h>
-#include "game_object.h"
+#include <stdlib.h>
+#include "game_ai.h"
 
-game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation,float velocity);
-#endif
+void game_ai_update(game_object *object)
+{
+	switch(object->state)
+	{
+		case STATIONARY:
+
+			break;
+		case MOVING:
+
+			break;
+		case COMBAT :
+
+			break;
+	}	
+}
