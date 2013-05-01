@@ -16,9 +16,12 @@
  * =====================================================================================
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include "weapon_control.h"
 #include <jnxc_headers/jnxlist.h>
+#include "../utils/geometry.h"
+#include "../logic/cartographer.h"
 jnx_list *weapon_shot_list = NULL;
 
 
@@ -49,18 +52,31 @@ void weapon_draw(sfRenderWindow *window)
 		weapon_shot_list = jnx_list_init();
 	}
 	jnx_node *head = weapon_shot_list->head;
-
+	jnx_list *temp = jnx_list_init();
 	while(head)
 	{	
 		sfSprite *current = (sfSprite*)head->_data;
 
 		sfVector2f move_offset;
-		move_offset.x = cos(sfSprite_getRotation(current) * 3.14159265 / 180) * 10.0f;
-		move_offset.y = sin(sfSprite_getRotation(current) * 3.14159265 / 180) * 10.0f ;
+		move_offset.x = cos(sfSprite_getRotation(current) * 3.14159265 / 180) * 100.0f;
+		move_offset.y = sin(sfSprite_getRotation(current) * 3.14159265 / 180) * 100.0f ;
 		sfSprite_move(current,move_offset);
 		sfRenderWindow_drawSprite(window,current,NULL);
+		
+
+		if(geometry_contains(cartographer_getbounds(),sfSprite_getPosition(current)))
+		{
+			jnx_list_add(temp,current);
+		}		
+		else
+		{
+			sfSprite_destroy(current);
+		}	
 		head = head->next_node;
 	}
+
+	weapon_shot_list = temp;	
+
 
 	/*-----------------------------------------------------------------------------
 	 *  Create second list based on objects outside of the cartographer bounds and delete
