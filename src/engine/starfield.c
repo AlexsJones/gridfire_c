@@ -1,0 +1,71 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  starfield.c
+ *
+ *    Description:  
+ *
+ *        Version:  1.0
+ *        Created:  05/01/13 11:42:19
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  AlexsJones (), alexsimonjones@gmail.com
+ *   Organization:  
+ *
+ * =====================================================================================
+ */
+#include <stdlib.h>
+#include <stdio.h>
+#include "starfield.h"
+#include <jnxc_headers/jnxlist.h>
+jnx_list *star_field_list = NULL;
+void starfield_create(square *bounds,int density)
+{
+	if(star_field_list == NULL)
+	{
+		star_field_list = jnx_list_init();
+	}
+	int count;
+	sfTexture *texture = sfTexture_createFromFile("res/star.png",NULL);
+
+	for(count = 0; count < density; ++count)
+	{
+		int x = rand() % (bounds->left + bounds->right);
+		int y = rand() % (bounds->top + bounds->bottom);
+		
+		sfSprite *star = sfSprite_create();
+		sfSprite_setTexture(star,texture,1);
+		
+		sfVector2f pos;
+		pos.x = x;
+		pos.y = y;
+
+		sfVector2f scale;
+		float current = drand48();
+		scale.x = current;
+		scale.y = current;
+		sfSprite_setScale(star,scale);
+
+
+		sfSprite_setPosition(star,pos);
+		
+		sfVector2f org;
+		org.x = x /2;
+		org.y = y/2;
+
+		sfSprite_setOrigin(star,org);
+		jnx_list_add(star_field_list,star);
+	}
+}
+void starfield_draw(sfRenderWindow *window)
+{
+		jnx_node *head = star_field_list->head;
+	
+		while(head)
+		{
+			sfSprite *current = (sfSprite*)head->_data;
+			sfRenderWindow_drawSprite(window,current,NULL);
+			head = head->next_node;
+		}
+}

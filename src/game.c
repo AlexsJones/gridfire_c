@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include "engine/object_builder.h"
 #include "engine/game_object.h"
+#include "engine/starfield.h"
 #include "logic/cartographer.h"
 #include "game.h"
 #include "logic/game_ai.h"
@@ -26,6 +27,10 @@
 #include <jnxc_headers/jnxlist.h>
 #include <string.h>
 #include <stdio.h>
+
+#define GAMEBOUNDSSIZE 5000
+#define STARFIELDDENSITY 1000
+
 sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
@@ -50,7 +55,8 @@ int game_setup()
 	jnx_log("Creating game clock\n");
 	clock = sfClock_create();
 	jnx_log("Creating bounding map\n");
-	cartographer_setbounds(0,5000,0,5000);
+	cartographer_setbounds(0,GAMEBOUNDSSIZE,0,GAMEBOUNDSSIZE);
+	starfield_create(cartographer_getbounds(),STARFIELDDENSITY);
 	jnx_log("Initial setup complete\n");	
 	return 0;
 }
@@ -123,6 +129,10 @@ void game_run()
 		 *-----------------------------------------------------------------------------*/
 		sfRenderWindow_setView(main_window,main_view);
 		/*-----------------------------------------------------------------------------
+		 *  Draw starfield
+		 *-----------------------------------------------------------------------------*/
+		starfield_draw(main_window);	
+		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
 		jnx_node *current_draw_pos = cartographer_get_at(sfView_getCenter(main_view))->head; 
@@ -144,6 +154,7 @@ void game_run()
 			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 			current_draw_pos = current_draw_pos->next_node;
 		}
+
 		/*-----------------------------------------------------------------------------
 		 *  Display window
 		 *-----------------------------------------------------------------------------*/
