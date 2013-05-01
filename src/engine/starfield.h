@@ -20,5 +20,5 @@
 #include <SFML/Graphics.h>
 #include "../utils/geometry.h"
 void starfield_create(square *bounds,int density);
-void starfield_draw(sfRenderWindow *window);
+void starfield_draw(sfRenderWindow *window,sfVector2f player_position);
 #endif

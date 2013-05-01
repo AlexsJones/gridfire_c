@@ -28,8 +28,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#define GAMEBOUNDSSIZE 5000
-#define STARFIELDDENSITY 1000
+#define GAMEBOUNDSSIZE 25000
+#define STARFIELDDENSITY 90000
 
 sfVideoMode videomode;
 sfRenderWindow *main_window;
@@ -131,7 +131,9 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Draw starfield
 		 *-----------------------------------------------------------------------------*/
-		starfield_draw(main_window);	
+		sfVector2f player_position = sfSprite_getPosition(player->sprite);
+		
+		starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
 		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
