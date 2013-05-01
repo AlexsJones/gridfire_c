@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "../utils/geometry.h"
 #include "../logic/cartographer.h"
+#include "weapon_control.h"
 #include "game_object.h"
 #include <string.h>
 void game_object_update(game_object *obj, sfEvent event,sfView *view)
@@ -49,6 +50,10 @@ void game_object_update(game_object *obj, sfEvent event,sfView *view)
 		if(sfKeyboard_isKeyPressed(sfKeyX))
 		{
 			sfView_zoom(view,1.1f);
+		}
+		if(sfKeyboard_isKeyPressed(sfKeyTab))
+		{
+			weapon_fire(obj);
 		}
 		sfSprite_rotate(obj->sprite,obj->rotation);
 		sfVector2f move_offset;

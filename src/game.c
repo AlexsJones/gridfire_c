@@ -21,6 +21,7 @@
 #include "engine/starfield.h"
 #include "logic/cartographer.h"
 #include "game.h"
+#include "engine/weapon_control.h"
 #include "logic/game_ai.h"
 #include "utils/config_parser.h"
 #include <jnxc_headers/jnxlog.h>
@@ -115,7 +116,7 @@ void game_run()
 	{
 		sfTime time = sfClock_getElapsedTime(clock);
 		float current_time = sfTime_asSeconds(time);
-		
+
 		sfRenderWindow_pollEvent(main_window,&current_event);
 		switch(current_event.key.code)
 		{
@@ -131,9 +132,11 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Draw starfield
 		 *-----------------------------------------------------------------------------*/
-		sfVector2f player_position = sfSprite_getPosition(player->sprite);
-		
 		starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
+		/*-----------------------------------------------------------------------------
+		 *  Draw weapon fire
+		 *-----------------------------------------------------------------------------*/
+		weapon_draw(main_window);
 		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
