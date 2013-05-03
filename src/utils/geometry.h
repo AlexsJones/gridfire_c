@@ -30,6 +30,6 @@ typedef struct square
  *  Return 1 on positive, Return 0 on negative
  *-----------------------------------------------------------------------------*/
 int geometry_contains(square *container,sfVector2f position);
-
+float geometry_distance(sfVector2f v1,sfVector2f v2);
 
 #endif

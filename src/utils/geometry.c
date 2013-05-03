@@ -17,7 +17,13 @@
  */
 #include <stdlib.h>
 #include "geometry.h"
+#include <math.h>
 
+float geometry_distance(sfVector2f a,sfVector2f b)
+{
+	float k= sqrt((float)((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y)));
+	return k;
+}
 int geometry_contains(square *container,sfVector2f position)
 {
 	int x_flag = 0;

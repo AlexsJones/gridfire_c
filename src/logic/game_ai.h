@@ -18,5 +18,5 @@
 #ifndef __GAME_AI_H__
 #define __GAME_AI_H__
 #include "../engine/game_object.h"
-void game_ai_update(game_object *object);
+void game_ai_update(game_object *object,game_object *player);
 #endif

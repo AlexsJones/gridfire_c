@@ -154,7 +154,7 @@ void game_run()
 				/*-----------------------------------------------------------------------------
 				 *  Update AI objects
 				 *-----------------------------------------------------------------------------*/
-				game_ai_update(obj);	
+				game_ai_update(obj,player);	
 			}
 			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 			current_draw_pos = current_draw_pos->next_node;
