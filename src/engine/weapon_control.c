@@ -51,7 +51,6 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	{
 		weapon_shot_list = jnx_list_init();
 	}
-	
 	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
 	sfSprite *sprite = weapon_create_sprite(parent);
 	weapon_shot->damage = 10; // hardcoded for now
@@ -66,18 +65,14 @@ void weapon_draw(sfRenderWindow *window)
 	}
 	jnx_node *head = weapon_shot_list->head;
 	jnx_list *temp = jnx_list_init();
-	
 	while(head)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
-
 		sfVector2f move_offset;
 		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f;
 		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f ;
 		sfSprite_move(current->sprite,move_offset);
 		sfRenderWindow_drawSprite(window,current->sprite,NULL);
-		
-
 		if(geometry_contains(cartographer_getbounds(),sfSprite_getPosition(current->sprite)))
 		{
 			jnx_list_add(temp,current);
@@ -89,6 +84,5 @@ void weapon_draw(sfRenderWindow *window)
 		}	
 		head = head->next_node;
 	}
-
 	weapon_shot_list = temp;	
 }

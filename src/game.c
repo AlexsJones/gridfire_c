@@ -79,6 +79,7 @@ int game_load(char *configuration_path)
 		 *-----------------------------------------------------------------------------*/
 		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation,obj->velocity);
 
+
 		/*-----------------------------------------------------------------------------
 		 *  Setup a pointer to player
 		 *-----------------------------------------------------------------------------*/
