@@ -23,6 +23,7 @@
 #include "weapon_control.h"
 #include "game_object.h"
 #include <string.h>
+#include <assert.h>
 void game_object_update(game_object *obj, sfEvent event,sfView *view)
 {
 	if(strcmp("player",obj->object_type) == 0)
@@ -95,4 +96,33 @@ else
 	 *  AI movement
 	 *-----------------------------------------------------------------------------*/
 }
+}
+square* game_object_get_bounds(game_object *obj)
+{
+	assert(obj);
+	square *box = malloc(sizeof(square));
+	sfVector2f position = sfSprite_getPosition(obj->sprite);
+	box->left = position.x - 10;
+	box->right = position.x + 10;
+	box->top = position.y - 10;
+	box->bottom = position.y + 10;
+	return box;
+}
+sfRectangleShape *game_object_get_boundingRect(game_object *obj)
+{
+
+			sfVector2u texture_size = sfTexture_getSize(sfSprite_getTexture(obj->sprite));
+			sfVector2f bounding_size;
+			bounding_size.x = texture_size.x;
+			bounding_size.y = texture_size.y;    
+			sfRectangleShape *bounding_box = sfRectangleShape_create();
+			sfVector2f bounding_position;
+			bounding_position.x = sfSprite_getPosition(obj->sprite).x - (texture_size.x /2);
+			bounding_position.y = sfSprite_getPosition(obj->sprite).y - (texture_size.y /2);
+			sfRectangleShape_setPosition(bounding_box,bounding_position);
+			               
+			sfRectangleShape_setOutlineColor(bounding_box,sfColor_fromRGB(255,255,0));
+			sfRectangleShape_setSize(bounding_box,bounding_size);
+
+	return bounding_box;
 }

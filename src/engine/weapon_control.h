@@ -19,8 +19,9 @@
 #define __WEAPON_CONTROL_H__
 #include "game_object.h"
 #include <SFML/Graphics.h>
+#include <jnxc_headers/jnxlist.h>
 void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */);
 
-void weapon_draw(sfRenderWindow *window);
+void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue);
 
 #endif

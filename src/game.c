@@ -31,7 +31,6 @@
 
 #define GAMEBOUNDSSIZE 25000
 #define STARFIELDDENSITY 100000
-
 sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
@@ -46,7 +45,7 @@ int game_setup()
 	videomode = sfVideoMode_getDesktopMode();
 	jnx_log("Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
-	sfRenderWindow_setFramerateLimit(main_window,30);
+	sfRenderWindow_setFramerateLimit(main_window,60);
 	main_view = sfView_create();
 	sfVector2f view_size;
 	view_size.x = videomode.width;
@@ -135,13 +134,14 @@ void game_run()
 		 *-----------------------------------------------------------------------------*/
 		starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
 		/*-----------------------------------------------------------------------------
-		 *  Draw weapon fire
-		 *-----------------------------------------------------------------------------*/
-		weapon_draw(main_window);
-		/*-----------------------------------------------------------------------------
 		 *  Draw objects
 		 *-----------------------------------------------------------------------------*/
-		jnx_node *current_draw_pos = cartographer_get_at(sfView_getCenter(main_view))->head; 
+		jnx_list *draw_queue = cartographer_get_at(sfView_getCenter(main_view));
+		jnx_node *current_draw_pos = draw_queue->head; 
+		/*-----------------------------------------------------------------------------
+		 *  Draw weapon fire
+		 *-----------------------------------------------------------------------------*/
+		weapon_draw(main_window,&draw_queue);
 		while(current_draw_pos)
 		{
 			game_object *obj = (game_object*)current_draw_pos->_data;
@@ -157,10 +157,14 @@ void game_run()
 				 *-----------------------------------------------------------------------------*/
 				game_ai_update(obj,player);	
 			}
+#ifdef DEBUG
+			sfRectangleShape *bounding = game_object_get_boundingRect(obj);
+			sfRenderWindow_drawRectangleShape(main_window,bounding,NULL);
+			sfRectangleShape_destroy(bounding);
+#endif
 			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 			current_draw_pos = current_draw_pos->next_node;
 		}
-
 		/*-----------------------------------------------------------------------------
 		 *  Display window
 		 *-----------------------------------------------------------------------------*/

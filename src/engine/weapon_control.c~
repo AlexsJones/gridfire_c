@@ -56,33 +56,6 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	weapon_shot->sprite = sprite;	
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 }
-void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
-{
-	jnx_node *dqueue_head = (*draw_queue)->head;
-	while(dqueue_head)
-	{
-		game_object *current_draw_obj = (game_object*)dqueue_head->_data;
-		square *object_square = game_object_get_bounds(current_draw_obj);
-		if(geometry_contains(object_square,sfSprite_getPosition(current->sprite)))
-		{
-
-		}
-		free(current_draw_obj);
-		dqueue_head = dqueue_head->next_node;
-	}
-}
-void weapon_check_bounds(weapon_shot *current, jnx_list **temp_list)
-{
-	if(geometry_contains(cartographer_getbounds(), sfSprite_getPosition(current->sprite)))
-	{
-		jnx_list_add((*temp_list),current);
-	}
-	else
-	{
-		sfSprite_destroy(current->sprite);
-		free(current);
-	}
-}
 void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue)
 {
 	if(weapon_shot_list == NULL)
@@ -95,23 +68,38 @@ void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
 		sfVector2f move_offset;
-		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 50.0f;
-		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 50.0f ;
+		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f;
+		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f ;
 		sfSprite_move(current->sprite,move_offset);
+
 		/*-----------------------------------------------------------------------------
 		 *  Check the draw queue!
 		 *-----------------------------------------------------------------------------*/
+		//Something isnt working properly so is only updating very briefly...	
+		jnx_node *dhead = (*draw_queue)->head;
+		while(dhead)
+		{				
+			game_object *obj = (game_object*)dhead->_data;
+			square *obj_square = game_object_get_bounds(obj);
+			if(geometry_contains(obj_square,sfSprite_getPosition(current->sprite)))
+			{
+				sfColor c = sfColor_fromRGB(255,255,0);
+				sfSprite_setColor(current->sprite,c);
+			}
+			free(obj_square);
+			dhead = dhead->next_node;
+		}
 		sfRenderWindow_drawSprite(window,current->sprite,NULL);
-		/*-----------------------------------------------------------------------------
-		 *  Check to see whether the current shot goes out of map bounds
-		 *-----------------------------------------------------------------------------*/
-		weapon_check_bounds(current,&temp);	
-		/*-----------------------------------------------------------------------------
-		 *  Check to see whether the current shot collides with anything drawn
-		 *-----------------------------------------------------------------------------*/
-		weapon_check_collision(current,&(*draw_queue));
+		if(geometry_contains(cartographer_getbounds(),sfSprite_getPosition(current->sprite)))
+		{
+			jnx_list_add(temp,current);
+		}		
+		else
+		{
+			sfSprite_destroy(current->sprite);
+			free(current);
+		}	
 		head = head->next_node;
 	}
 	weapon_shot_list = temp;	
-
 }
