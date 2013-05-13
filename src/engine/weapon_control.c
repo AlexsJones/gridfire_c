@@ -75,7 +75,13 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 		square *game_object_size = game_object_get_bounds(obj);		
 		if(geometry_contains(game_object_size,sfSprite_getPosition(current->sprite)))
 		{
+			obj->health = obj->health - current->damage;
 			sfSprite_setColor(current->sprite,sfColor_fromRGB(255,255,0));
+			//destroy the ship if health is 0
+			if(obj->health <= 0)
+			{
+				printf("%s exploded!\n",obj->object_type);
+			}
 		}	
 		free(game_object_size);
 		dqueue_head = dqueue_head->next_node;
