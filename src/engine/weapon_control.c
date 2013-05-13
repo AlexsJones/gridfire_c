@@ -71,19 +71,21 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 		dqueue_head = dqueue_head->next_node;
 	}
 }
-void weapon_check_bounds(weapon_shot *current, jnx_list **temp_list)
+int weapon_check_bounds(weapon_shot *current, jnx_list **temp_list,square *view_bounds)
 {
-	if(geometry_contains(cartographer_getbounds(), sfSprite_getPosition(current->sprite)))
+	if(geometry_contains(view_bounds, sfSprite_getPosition(current->sprite)))
 	{
 		jnx_list_add((*temp_list),current);
+		return 0;
 	}
 	else
 	{
 		sfSprite_destroy(current->sprite);
 		free(current);
+		return 1;
 	}
 }
-void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue)
+void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 {
 	if(weapon_shot_list == NULL)
 	{
@@ -91,6 +93,14 @@ void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue)
 	}
 	jnx_node *head = weapon_shot_list->head;
 	jnx_list *temp = jnx_list_init();
+	sfVector2f view_pos = sfView_getCenter(view);
+	sfVector2f view_size = sfView_getSize(view);
+	square *view_bounds = malloc(sizeof(square));
+	view_bounds->top = view_pos.y - (view_size.y /2);
+	view_bounds->bottom = view_pos.y + (view_size.y /2);
+	view_bounds->left = view_pos.x - (view_size.x /2);
+	view_bounds->right = view_pos.x + (view_size.x /2);	
+
 	while(head)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
@@ -99,19 +109,19 @@ void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue)
 		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 50.0f ;
 		sfSprite_move(current->sprite,move_offset);
 		/*-----------------------------------------------------------------------------
-		 *  Check the draw queue!
-		 *-----------------------------------------------------------------------------*/
-		sfRenderWindow_drawSprite(window,current->sprite,NULL);
-		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot goes out of map bounds
 		 *-----------------------------------------------------------------------------*/
-		weapon_check_bounds(current,&temp);	
+		if(weapon_check_bounds(current,&temp,view_bounds) == 0)
+		{
+			sfRenderWindow_drawSprite(window,current->sprite,NULL);
+		}	
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot collides with anything drawn
 		 *-----------------------------------------------------------------------------*/
-		weapon_check_collision(current,&(*draw_queue));
+		//		weapon_check_collision(current,&(*draw_queue));
 		head = head->next_node;
 	}
+	free(view_bounds);
 	weapon_shot_list = temp;	
 
 }

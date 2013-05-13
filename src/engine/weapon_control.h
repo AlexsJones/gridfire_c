@@ -22,6 +22,6 @@
 #include <jnxc_headers/jnxlist.h>
 void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */);
 
-void weapon_draw(sfRenderWindow *window, jnx_list **draw_queue);
+void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue);
 
 #endif

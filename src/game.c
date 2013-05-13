@@ -141,7 +141,7 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Draw weapon fire
 		 *-----------------------------------------------------------------------------*/
-		weapon_draw(main_window,&draw_queue);
+		weapon_draw(main_window,main_view,&draw_queue);
 		while(current_draw_pos)
 		{
 			game_object *obj = (game_object*)current_draw_pos->_data;

@@ -21,8 +21,6 @@
 #include "../utils/geometry.h"
 #include <jnxc_headers/jnxlist.h>
 
-
-
 void cartographer_setbounds(int top, int bottom, int left, int right);
 square *cartographer_getbounds(void);
 void cartographer_add(game_object *obj);
