@@ -54,20 +54,30 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	sfSprite *sprite = weapon_create_sprite(parent);
 	weapon_shot->damage = 10; // hardcoded for now
 	weapon_shot->sprite = sprite;	
+
+
+	/*-----------------------------------------------------------------------------
+	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later
+	 *-----------------------------------------------------------------------------*/
+	sfVector2f move_offset;
+	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 40.0f;
+	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 40.0f ;
+	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 }
 void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 {
 	jnx_node *dqueue_head = (*draw_queue)->head;
+	sfVector2f current_weapon_pos = sfSprite_getPosition(current->sprite);
 	while(dqueue_head)
 	{
-		game_object *current_draw_obj = (game_object*)dqueue_head->_data;
-		square *object_square = game_object_get_bounds(current_draw_obj);
-		if(geometry_contains(object_square,sfSprite_getPosition(current->sprite)))
+		game_object *obj = dqueue_head->_data;	
+		square *game_object_size = game_object_get_bounds(obj);		
+		if(geometry_contains(game_object_size,sfSprite_getPosition(current->sprite)))
 		{
-
-		}
-		free(current_draw_obj);
+			sfSprite_setColor(current->sprite,sfColor_fromRGB(255,255,0));
+		}	
+		free(game_object_size);
 		dqueue_head = dqueue_head->next_node;
 	}
 }
@@ -105,9 +115,13 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
 		sfVector2f move_offset;
-		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 50.0f;
-		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 50.0f ;
+		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f;
+		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f ;
 		sfSprite_move(current->sprite,move_offset);
+		/*-----------------------------------------------------------------------------
+		 *  Check to see whether the current shot collides with anything drawn
+		 *-----------------------------------------------------------------------------*/
+		weapon_check_collision(current,&(*draw_queue));
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot goes out of map bounds
 		 *-----------------------------------------------------------------------------*/
@@ -115,10 +129,6 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 		{
 			sfRenderWindow_drawSprite(window,current->sprite,NULL);
 		}	
-		/*-----------------------------------------------------------------------------
-		 *  Check to see whether the current shot collides with anything drawn
-		 *-----------------------------------------------------------------------------*/
-		//		weapon_check_collision(current,&(*draw_queue));
 		head = head->next_node;
 	}
 	free(view_bounds);
