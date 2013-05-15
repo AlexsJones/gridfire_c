@@ -26,6 +26,7 @@
 #include "../logic/cartographer.h"
 #include <jnxc_headers/jnxlog.h>
 jnx_list *weapon_shot_list = NULL;
+jnx_list *temp_draw = NULL;
 typedef struct weapon_shot
 {
 	sfSprite *sprite;
@@ -54,8 +55,6 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	sfSprite *sprite = weapon_create_sprite(parent);
 	weapon_shot->damage = 10; // hardcoded for now
 	weapon_shot->sprite = sprite;	
-
-
 	/*-----------------------------------------------------------------------------
 	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later
 	 *-----------------------------------------------------------------------------*/
@@ -80,7 +79,7 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 			//destroy the ship if health is 0
 			if(obj->health <= 0)
 			{
-				printf("%s exploded!\n",obj->object_type);
+				sfSprite_setColor(obj->sprite,sfColor_fromRGB(0,255,255));	
 			}
 		}	
 		free(game_object_size);
@@ -116,7 +115,6 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 	view_bounds->bottom = view_pos.y + (view_size.y /2);
 	view_bounds->left = view_pos.x - (view_size.x /2);
 	view_bounds->right = view_pos.x + (view_size.x /2);	
-
 	while(head)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
@@ -127,7 +125,7 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot collides with anything drawn
 		 *-----------------------------------------------------------------------------*/
-		weapon_check_collision(current,&(*draw_queue));
+		weapon_check_collision(current,draw_queue);
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot goes out of map bounds
 		 *-----------------------------------------------------------------------------*/
@@ -139,5 +137,4 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 	}
 	free(view_bounds);
 	weapon_shot_list = temp;	
-
 }

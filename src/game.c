@@ -28,7 +28,7 @@
 #include <jnxc_headers/jnxlist.h>
 #include <string.h>
 #include <stdio.h>
-
+#include "engine/game_ui.h"
 #define GAMEBOUNDSSIZE 25000
 #define STARFIELDDENSITY 100000
 sfVideoMode videomode;
@@ -58,6 +58,15 @@ int game_setup()
 	cartographer_setbounds(0,GAMEBOUNDSSIZE,0,GAMEBOUNDSSIZE);
 	starfield_create(cartographer_getbounds(),STARFIELDDENSITY);
 	jnx_log("Initial setup complete\n");	
+
+	/*-----------------------------------------------------------------------------
+	 *  Set up ingame ui
+	 *-----------------------------------------------------------------------------*/
+	if(game_ui_setup(main_window,main_view) != 0)
+	{
+		return 1;
+	}
+	
 	return 0;
 }
 int game_load(char *configuration_path)
@@ -142,6 +151,12 @@ void game_run()
 		 *  Draw weapon fire
 		 *-----------------------------------------------------------------------------*/
 		weapon_draw(main_window,main_view,&draw_queue);
+		
+		/*-----------------------------------------------------------------------------
+		 *  Draw ingame ui
+		 *-----------------------------------------------------------------------------*/
+		game_ui_update(main_window,main_view,&draw_queue);
+		game_ui_draw(main_window);
 		while(current_draw_pos)
 		{
 			game_object *obj = (game_object*)current_draw_pos->_data;

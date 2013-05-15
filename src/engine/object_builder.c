@@ -42,12 +42,12 @@ game_object *object_builder_create(char *object_type, char *texture_data,int x, 
 	 *  Set object type
 	 *-----------------------------------------------------------------------------*/
 	obj->object_type = object_type;
-	
+
 	/*-----------------------------------------------------------------------------
 	 * Set object velocity  
 	 *-----------------------------------------------------------------------------*/
 	obj->velocity = velocity;
-	
+
 	if(strcmp(obj->object_type,"player") == 0)
 	{
 		obj->state = PLAYER;
@@ -60,7 +60,7 @@ game_object *object_builder_create(char *object_type, char *texture_data,int x, 
 	{
 		obj->state = MOVING;
 	}
-	
+
 	/*-----------------------------------------------------------------------------
 	 *  Will later accomodate for ships starting moving
 	 *-----------------------------------------------------------------------------*/
@@ -68,7 +68,6 @@ game_object *object_builder_create(char *object_type, char *texture_data,int x, 
 	sfSprite_setTexture(obj->sprite,_texture,1);
 	sfSprite_setPosition(obj->sprite,obj->position);
 	sfSprite_setRotation(obj->sprite,rotation);
-
 	sfVector2u texture_origin = sfTexture_getSize(_texture);
 	float _x = (float)texture_origin.x;
 	float _y = (float)texture_origin.y;

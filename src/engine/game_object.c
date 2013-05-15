@@ -90,12 +90,6 @@ void game_object_update(game_object *obj, sfEvent event,sfView *view)
 
 
 }
-else
-{
-	/*-----------------------------------------------------------------------------
-	 *  AI movement
-	 *-----------------------------------------------------------------------------*/
-}
 }
 square* game_object_get_bounds(game_object *obj)
 {
@@ -104,10 +98,10 @@ square* game_object_get_bounds(game_object *obj)
 	sfVector2f position = sfSprite_getPosition(obj->sprite);
 	sfVector2u texture_size = sfTexture_getSize(sfSprite_getTexture(obj->sprite));
 	
-	box->left = position.x - (texture_size.x /2);
-	box->right = position.x + (texture_size.x /2);
-	box->top = position.y - (texture_size.y /2);
-	box->bottom = position.y + (texture_size.y /2);
+	box->left = position.x - texture_size.x ;
+	box->right = position.x + texture_size.x;
+	box->top = position.y - texture_size.y ;
+	box->bottom = position.y + texture_size.y;
 	return box;
 }
 sfRectangleShape *game_object_get_boundingRect(game_object *obj)

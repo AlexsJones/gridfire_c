@@ -51,10 +51,7 @@ void starfield_create(square *bounds,int density)
 		scale.x = current;
 		scale.y = current;
 		sfSprite_setScale(star,scale);
-
-
 		sfSprite_setPosition(star,pos);
-
 		jnx_list_add(star_field_list,star);
 	}
 }

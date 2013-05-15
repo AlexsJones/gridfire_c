@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  weapon_control.h
+ *       Filename:  game_ui.h
  *
- *    Description:  
+ *    Description:  :
  *
  *        Version:  1.0
- *        Created:  05/01/13 17:13:12
+ *        Created:  05/14/13 07:42:01
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,11 +15,11 @@
  *
  * =====================================================================================
  */
-#ifndef __WEAPON_CONTROL_H__
-#define __WEAPON_CONTROL_H__
-#include "game_object.h"
+#ifndef __GAME_UI_H__
+#define __GAME_UI_H__
 #include <SFML/Graphics.h>
 #include <jnxc_headers/jnxlist.h>
-void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */);
-void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue);
+int game_ui_setup(sfRenderWindow *main_window, sfView *main_view);
+void game_ui_update(sfRenderWindow *main_window, sfView *view,jnx_list **draw_queue);
+void game_ui_draw(sfRenderWindow *main_window);
 #endif
