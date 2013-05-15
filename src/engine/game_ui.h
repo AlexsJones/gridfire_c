@@ -19,7 +19,8 @@
 #define __GAME_UI_H__
 #include <SFML/Graphics.h>
 #include <jnxc_headers/jnxlist.h>
+#include "game_object.h"
 int game_ui_setup(sfRenderWindow *main_window, sfView *main_view);
-void game_ui_update(sfRenderWindow *main_window, sfView *view,jnx_list **draw_queue);
+void game_ui_update(sfRenderWindow *main_window, sfView *view,game_object *player);
 void game_ui_draw(sfRenderWindow *main_window);
 #endif

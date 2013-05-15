@@ -155,7 +155,7 @@ void game_run()
 		/*-----------------------------------------------------------------------------
 		 *  Draw ingame ui
 		 *-----------------------------------------------------------------------------*/
-		game_ui_update(main_window,main_view,&draw_queue);
+		game_ui_update(main_window,main_view,player);
 		game_ui_draw(main_window);
 		while(current_draw_pos)
 		{
