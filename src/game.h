@@ -22,4 +22,5 @@
 int game_setup(void);
 int game_load(char *configuration_path);
 void game_run(void);
+void game_end(void);
 #endif

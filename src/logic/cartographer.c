@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <jnxc_headers/jnxlist.h>
 #include <jnxc_headers/jnxlog.h>
+#include "../game.h"
 square *bounds_map = NULL;
 
 jnx_list *object_list;
@@ -57,4 +58,40 @@ square *cartographer_getbounds(void)
 {
 	if(bounds_map == NULL) { jnx_log("Error getting bounds - no map set\n");return NULL; }
 	return bounds_map;
+}
+void cartographer_update()
+{
+	
+	/*-----------------------------------------------------------------------------
+	 *  Warning, may slow down game loop if there are alot of objects here
+	 *-----------------------------------------------------------------------------*/
+	jnx_node *head = object_list->head;
+	jnx_list *new_draw = jnx_list_init();
+	while(head)
+	{
+		game_object *current = head->_data;
+		if(current->health > 0)
+		{
+			//still an active object
+			jnx_list_add(new_draw,current);
+		}
+		else
+		{
+			if(strcmp(current->object_type,"player")  == 0)
+			{
+				
+				/*-----------------------------------------------------------------------------
+				 *  If the player has been killed we'll call a clean up function to end the game
+				 *-----------------------------------------------------------------------------*/
+				game_end();	
+			}
+			printf("Object %s at %g %g has been removed as health was %d", current->object_type,current->position.x, current->position.y, current->health);
+			//remove the object
+			sfSprite_destroy(current->sprite);
+			free(current);
+		}
+		head = head->next_node;
+	}
+
+	object_list = new_draw;
 }

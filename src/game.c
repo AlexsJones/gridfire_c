@@ -66,7 +66,7 @@ int game_setup()
 	{
 		return 1;
 	}
-	
+
 	return 0;
 }
 int game_load(char *configuration_path)
@@ -151,7 +151,6 @@ void game_run()
 		 *  Draw weapon fire
 		 *-----------------------------------------------------------------------------*/
 		weapon_draw(main_window,main_view,&draw_queue);
-		
 		/*-----------------------------------------------------------------------------
 		 *  Draw ingame ui
 		 *-----------------------------------------------------------------------------*/
@@ -184,6 +183,13 @@ void game_run()
 		 *  Display window
 		 *-----------------------------------------------------------------------------*/
 		sfRenderWindow_display(main_window);
+		cartographer_update();
 	}
 	sfRenderWindow_destroy(main_window);
+}
+void game_end(void)
+{
+	printf("Ending game!\n");
+	sfRenderWindow_destroy(main_window);
+	exit(0);
 }
