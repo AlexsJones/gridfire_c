@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <jnxc_headers/jnxlist.h>
 #include <jnxc_headers/jnxlog.h>
+#include "audio_control.h"
 #include "../game.h"
 square *bounds_map = NULL;
 
@@ -86,6 +87,7 @@ void cartographer_update()
 			}
 			jnx_log("Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
 			//remove the object
+			play_sound(sound_lexplosion);
 			sfSprite_destroy(current->sprite);
 			free(current);
 		}

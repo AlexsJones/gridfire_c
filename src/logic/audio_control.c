@@ -29,6 +29,8 @@ sfSound *audio_control_build_sound(char *path)
 }
 void audio_control_setup(void)
 {
+	sound_lexplosion = audio_control_build_sound("res/lexplosion.flac");
+	assert(sound_lexplosion);
 	sound_laser = audio_control_build_sound("res/laser01.flac");
 	assert(sound_laser);	
 	sound_laser2 = audio_control_build_sound("res/laser02.flac");
