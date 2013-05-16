@@ -29,6 +29,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "engine/game_ui.h"
+#include "logic/audio_control.h"
+#include <SFML/Audio.h>
 #define GAMEBOUNDSSIZE 25000
 #define STARFIELDDENSITY 100000
 sfVideoMode videomode;
@@ -36,7 +38,6 @@ sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
 sfClock *clock;
-
 
 /*-----------------------------------------------------------------------------
  *  Game text
@@ -79,6 +80,13 @@ int game_setup()
 	/*-----------------------------------------------------------------------------
 	 *  Set up ingame ui
 	 *-----------------------------------------------------------------------------*/
+	
+	
+	/*-----------------------------------------------------------------------------
+	 *  Load ingame music
+	 *-----------------------------------------------------------------------------*/
+	audio_control_setup();
+	play_music(TITLEMUSIC);
 	if(game_ui_setup(main_window,main_view) != 0)
 	{
 		return 1;
@@ -242,6 +250,7 @@ void game_run()
 						sfRenderWindow_close(main_window);
 						break;
 					case sfKeySpace:
+						play_music(INGAMEMUSIC);
 						current_game_state = RUNNING;
 						break;
 				}

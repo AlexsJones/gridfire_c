@@ -25,6 +25,9 @@
 #include "../utils/geometry.h"
 #include "../logic/cartographer.h"
 #include <jnxc_headers/jnxlog.h>
+#include <SFML/Audio.h>
+#include "../logic/audio_control.h"
+#include <string.h>
 jnx_list *weapon_shot_list = NULL;
 jnx_list *temp_draw = NULL;
 typedef struct weapon_shot
@@ -32,17 +35,16 @@ typedef struct weapon_shot
 	sfSprite *sprite;
 	int damage;
 }weapon_shot;
-
-
-sfSprite *weapon_create_sprite(game_object *parent)
+/*-----------------------------------------------------------------------------
+ *  Weapon sounds
+ *-----------------------------------------------------------------------------*/
+sfSprite *weapon_create_sprite(game_object *parent,char *path)
 {
-	sfTexture *texture = sfTexture_createFromFile("res/plasma.png",NULL);
-
+	sfTexture *texture = sfTexture_createFromFile(path,NULL);
 	sfSprite *weapon = sfSprite_create();
 	sfSprite_setTexture(weapon,texture,1);
 	sfSprite_setPosition(weapon,sfSprite_getPosition(parent->sprite));
 	sfSprite_setRotation(weapon,sfSprite_getRotation(parent->sprite));
-
 	return weapon;
 }
 void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */)
@@ -52,7 +54,7 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 		weapon_shot_list = jnx_list_init();
 	}
 	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
-	sfSprite *sprite = weapon_create_sprite(parent);
+	sfSprite *sprite = weapon_create_sprite(parent,"res/plasma.png");
 	weapon_shot->damage = parent->weapon_damage;
 	weapon_shot->sprite = sprite;	
 	/*-----------------------------------------------------------------------------
@@ -63,6 +65,14 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 40.0f ;
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
+
+	if(strcmp(parent->object_type,"player") == 0)
+	{
+	play_sound(sound_laser2);
+	}else
+	{
+	play_sound(sound_laser);
+}
 }
 void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 {
