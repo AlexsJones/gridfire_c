@@ -24,6 +24,40 @@
 
 
 jnx_list *star_field_list = NULL;
+jnx_list *menu_starfield = NULL;
+jnx_list *starfield_menu_create(sfView *view)
+{
+	
+	if(menu_starfield != NULL) { return menu_starfield; };
+	menu_starfield = jnx_list_init();
+	int density = 1000;
+	sfVector2f vsize = sfView_getSize(view);
+	srand(time(NULL));
+	int count;
+	sfTexture *texture = sfTexture_createFromFile("res/star.png",NULL);
+
+	for(count = 0; count < density; ++count)
+	{
+		int x = rand() % (int)vsize.x;
+		int y = rand() % (int)vsize.y;
+
+		sfSprite *star = sfSprite_create();
+		sfSprite_setTexture(star,texture,1);
+
+		sfVector2f pos;
+		pos.x = x;
+		pos.y = y;
+
+		sfVector2f scale;
+		float current = 1;
+		scale.x = current;
+		scale.y = current;
+		sfSprite_setScale(star,scale);
+		sfSprite_setPosition(star,pos);
+		jnx_list_add(menu_starfield,star);
+	}
+	return menu_starfield;
+}
 void starfield_create(square *bounds,int density)
 {
 	srand(time(NULL));

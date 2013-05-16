@@ -19,6 +19,8 @@
 #define __STARFIELD_H__
 #include <SFML/Graphics.h>
 #include "../utils/geometry.h"
+#include <jnxc_headers/jnxlist.h>
+jnx_list *starfield_menu_create(sfView *view);
 void starfield_create(square *bounds,int density);
 void starfield_draw(sfRenderWindow *window,sfVector2f player_position);
 #endif

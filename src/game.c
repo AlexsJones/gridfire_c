@@ -278,6 +278,23 @@ void game_run()
 						text_yellow = 0;
 						break;
 				}
+	
+				jnx_list *menu_starfield = starfield_menu_create(main_view);
+				jnx_node *head = menu_starfield->head;
+				while(menu_starfield->head)
+				{
+					sfSprite *sprite = menu_starfield->head->_data;
+					sfVector2f pos = sfSprite_getPosition(sprite);
+					pos.y = pos.y +1;
+					if(pos.y > sfView_getSize(main_view).y)
+					{
+						pos.y = 0;
+					}
+					sfSprite_setPosition(sprite,pos);
+					sfRenderWindow_drawSprite(main_window,sprite,NULL);
+					menu_starfield->head = menu_starfield->head->next_node;
+				}
+				menu_starfield->head = head;
 				sfRenderWindow_drawText(main_window,game_start_button_text,NULL);
 				sfRenderWindow_drawText(main_window,game_start_text,NULL);
 				sfRenderWindow_display(main_window);	
