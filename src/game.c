@@ -36,10 +36,19 @@ sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
 sfClock *clock;
+
+
+/*-----------------------------------------------------------------------------
+ *  Game text
+ *-----------------------------------------------------------------------------*/
+sfText *game_over_text = NULL;
+
 /*-----------------------------------------------------------------------------
  *  Player handle for view and camera purposes
  *-----------------------------------------------------------------------------*/
 game_object *player = NULL;
+typedef enum { RUNNING, GAMEOVER } game_state;
+game_state current_game_state;
 int game_setup()
 {
 	videomode = sfVideoMode_getDesktopMode();
@@ -60,6 +69,10 @@ int game_setup()
 	jnx_log("Initial setup complete\n");	
 
 	/*-----------------------------------------------------------------------------
+	 *  Game text
+	 *-----------------------------------------------------------------------------*/
+	game_over_text = game_ui_text_builder("GAME OVER",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,30);
+	/*-----------------------------------------------------------------------------
 	 *  Set up ingame ui
 	 *-----------------------------------------------------------------------------*/
 	if(game_ui_setup(main_window,main_view) != 0)
@@ -67,6 +80,10 @@ int game_setup()
 		return 1;
 	}
 
+	/*-----------------------------------------------------------------------------
+	 *  Set game state to running
+	 *-----------------------------------------------------------------------------*/
+	current_game_state = RUNNING;
 	return 0;
 }
 int game_load(char *configuration_path)
@@ -85,7 +102,7 @@ int game_load(char *configuration_path)
 		 *  Here we transfer ownership from the configuration list to the draw queue
 		 *  This also involves a conversion element to produce a sprite object
 		 *-----------------------------------------------------------------------------*/
-		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation,obj->velocity);
+		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation,obj->velocity,obj->weapon_damage);
 
 
 		/*-----------------------------------------------------------------------------
@@ -121,75 +138,101 @@ void game_run()
 {
 	jnx_log("Starting run loop\n");
 	sfEvent current_event;
+	sfTime time;
+	float current_time;
 	while(sfRenderWindow_isOpen(main_window))
 	{
-		sfTime time = sfClock_getElapsedTime(clock);
-		float current_time = sfTime_asSeconds(time);
-
-		sfRenderWindow_pollEvent(main_window,&current_event);
-		switch(current_event.key.code)
+		switch(current_game_state)
 		{
-			case sfKeyEscape:
-				sfRenderWindow_close(main_window);
+			case RUNNING:
+				time = sfClock_getElapsedTime(clock);
+				current_time = sfTime_asSeconds(time);
+
+				sfRenderWindow_pollEvent(main_window,&current_event);
+				switch(current_event.key.code)
+				{
+					case sfKeyEscape:
+						sfRenderWindow_close(main_window);
+						break;
+				}
+				sfRenderWindow_clear(main_window,clear_color);	
+				/*-----------------------------------------------------------------------------
+				 *  Set the current view
+				 *-----------------------------------------------------------------------------*/
+				sfRenderWindow_setView(main_window,main_view);
+				/*-----------------------------------------------------------------------------
+				 *  Draw starfield
+				 *-----------------------------------------------------------------------------*/
+				starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
+				/*-----------------------------------------------------------------------------
+				 *  Draw objects
+				 *-----------------------------------------------------------------------------*/
+				jnx_list *draw_queue = cartographer_get_at(sfView_getCenter(main_view));
+				jnx_node *current_draw_pos = draw_queue->head; 
+				/*-----------------------------------------------------------------------------
+				 *  Draw weapon fire
+				 *-----------------------------------------------------------------------------*/
+				weapon_draw(main_window,main_view,&draw_queue);
+				/*-----------------------------------------------------------------------------
+				 *  Draw ingame ui
+				 *-----------------------------------------------------------------------------*/
+				game_ui_update(main_window,main_view,player);
+				game_ui_draw(main_window);
+				while(current_draw_pos)
+				{
+					game_object *obj = (game_object*)current_draw_pos->_data;
+					if(strcmp(obj->object_type,"player") == 0)
+					{
+						game_object_update(obj,current_event,main_view);				
+						sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
+					}
+					else
+					{
+						/*-----------------------------------------------------------------------------
+						 *  Update AI objects
+						 *-----------------------------------------------------------------------------*/
+						game_ai_update(obj,player);	
+					}
+#ifdef DEBUG
+					sfRectangleShape *bounding = game_object_get_boundingRect(obj);
+					sfRenderWindow_drawRectangleShape(main_window,bounding,NULL);
+					sfRectangleShape_destroy(bounding);
+#endif
+					sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
+					current_draw_pos = current_draw_pos->next_node;
+				}
+				/*-----------------------------------------------------------------------------
+				 *  Display window
+				 *-----------------------------------------------------------------------------*/
+				sfRenderWindow_display(main_window);
+				cartographer_update();
+				break;
+
+			case GAMEOVER:
+				sfRenderWindow_clear(main_window,clear_color);	
+				sfRenderWindow_pollEvent(main_window,&current_event);
+				switch(current_event.key.code)
+				{
+					case sfKeyEscape:
+						sfRenderWindow_close(main_window);
+						break;
+				}
+
+				sfVector2f pos = sfView_getCenter(main_view);
+				int text_offset = strlen(sfText_getString(game_over_text));
+				text_offset = text_offset * sfText_getCharacterSize(game_over_text);
+				sfVector2f newpos;
+				newpos.x	= pos.x - (text_offset / 2);
+				newpos.y = pos.y;
+				sfText_setPosition(game_over_text,newpos);
+				sfRenderWindow_drawText(main_window,game_over_text,NULL);
+				sfRenderWindow_display(main_window);	
 				break;
 		}
-		sfRenderWindow_clear(main_window,clear_color);	
-		/*-----------------------------------------------------------------------------
-		 *  Set the current view
-		 *-----------------------------------------------------------------------------*/
-		sfRenderWindow_setView(main_window,main_view);
-		/*-----------------------------------------------------------------------------
-		 *  Draw starfield
-		 *-----------------------------------------------------------------------------*/
-		starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
-		/*-----------------------------------------------------------------------------
-		 *  Draw objects
-		 *-----------------------------------------------------------------------------*/
-		jnx_list *draw_queue = cartographer_get_at(sfView_getCenter(main_view));
-		jnx_node *current_draw_pos = draw_queue->head; 
-		/*-----------------------------------------------------------------------------
-		 *  Draw weapon fire
-		 *-----------------------------------------------------------------------------*/
-		weapon_draw(main_window,main_view,&draw_queue);
-		/*-----------------------------------------------------------------------------
-		 *  Draw ingame ui
-		 *-----------------------------------------------------------------------------*/
-		game_ui_update(main_window,main_view,player);
-		game_ui_draw(main_window);
-		while(current_draw_pos)
-		{
-			game_object *obj = (game_object*)current_draw_pos->_data;
-			if(strcmp(obj->object_type,"player") == 0)
-			{
-				game_object_update(obj,current_event,main_view);				
-				sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
-			}
-			else
-			{
-				/*-----------------------------------------------------------------------------
-				 *  Update AI objects
-				 *-----------------------------------------------------------------------------*/
-				game_ai_update(obj,player);	
-			}
-#ifdef DEBUG
-			sfRectangleShape *bounding = game_object_get_boundingRect(obj);
-			sfRenderWindow_drawRectangleShape(main_window,bounding,NULL);
-			sfRectangleShape_destroy(bounding);
-#endif
-			sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
-			current_draw_pos = current_draw_pos->next_node;
-		}
-		/*-----------------------------------------------------------------------------
-		 *  Display window
-		 *-----------------------------------------------------------------------------*/
-		sfRenderWindow_display(main_window);
-		cartographer_update();
+
 	}
-	sfRenderWindow_destroy(main_window);
 }
 void game_end(void)
 {
-	printf("Ending game!\n");
-	sfRenderWindow_destroy(main_window);
-	exit(0);
+	current_game_state = GAMEOVER;
 }

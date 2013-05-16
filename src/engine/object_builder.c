@@ -19,7 +19,7 @@
 #include "object_builder.h"
 #include <string.h>
 #include <stdio.h>
-game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation, float velocity)
+game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation, float velocity, int damage)
 {
 	game_object *obj = malloc(sizeof(game_object));
 	obj->sprite = sfSprite_create();
@@ -43,6 +43,10 @@ game_object *object_builder_create(char *object_type, char *texture_data,int x, 
 	 *-----------------------------------------------------------------------------*/
 	obj->object_type = object_type;
 
+	/*-----------------------------------------------------------------------------
+	 *  Set damage
+	 *-----------------------------------------------------------------------------*/
+	obj->weapon_damage = damage;
 	/*-----------------------------------------------------------------------------
 	 * Set object velocity  
 	 *-----------------------------------------------------------------------------*/

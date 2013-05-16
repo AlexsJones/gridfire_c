@@ -21,5 +21,5 @@
 #include <SFML/Window.h>
 #include "game_object.h"
 
-game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation,float velocity);
+game_object *object_builder_create(char *object_type, char *texture_data,int x, int y, int health, float rotation,float velocity,int damage);
 #endif

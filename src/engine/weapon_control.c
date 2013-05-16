@@ -53,7 +53,7 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	}
 	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
 	sfSprite *sprite = weapon_create_sprite(parent);
-	weapon_shot->damage = 10; // hardcoded for now
+	weapon_shot->damage = parent->weapon_damage;
 	weapon_shot->sprite = sprite;	
 	/*-----------------------------------------------------------------------------
 	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later

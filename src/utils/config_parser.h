@@ -27,6 +27,7 @@ typedef struct data_object
 	int health;
 	float rotation;
 	float velocity;
+	int weapon_damage;
 }data_object;
 
 jnx_list* config_parser_load_configuration(char *path);

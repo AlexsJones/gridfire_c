@@ -61,7 +61,7 @@ square *cartographer_getbounds(void)
 }
 void cartographer_update()
 {
-	
+
 	/*-----------------------------------------------------------------------------
 	 *  Warning, may slow down game loop if there are alot of objects here
 	 *-----------------------------------------------------------------------------*/
@@ -79,13 +79,12 @@ void cartographer_update()
 		{
 			if(strcmp(current->object_type,"player")  == 0)
 			{
-				
 				/*-----------------------------------------------------------------------------
 				 *  If the player has been killed we'll call a clean up function to end the game
 				 *-----------------------------------------------------------------------------*/
 				game_end();	
 			}
-			printf("Object %s at %g %g has been removed as health was %d", current->object_type,current->position.x, current->position.y, current->health);
+			jnx_log("Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
 			//remove the object
 			sfSprite_destroy(current->sprite);
 			free(current);

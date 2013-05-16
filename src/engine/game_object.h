@@ -29,6 +29,7 @@ typedef struct game_object{
 	float rotation;
 	char *object_type;
 	float velocity;
+	int weapon_damage;
 	object_state state;
 }game_object;
 void game_object_update(game_object *obj, sfEvent event,sfView *view);
