@@ -42,12 +42,14 @@ sfClock *clock;
  *  Game text
  *-----------------------------------------------------------------------------*/
 sfText *game_over_text = NULL;
-
+sfText *game_start_text = NULL;
+sfText *game_start_button_text = NULL;
+int text_yellow = 1;
 /*-----------------------------------------------------------------------------
  *  Player handle for view and camera purposes
  *-----------------------------------------------------------------------------*/
 game_object *player = NULL;
-typedef enum { RUNNING, GAMEOVER } game_state;
+typedef enum { GAMESTART,RUNNING, GAMEOVER } game_state;
 game_state current_game_state;
 int game_setup()
 {
@@ -71,7 +73,9 @@ int game_setup()
 	/*-----------------------------------------------------------------------------
 	 *  Game text
 	 *-----------------------------------------------------------------------------*/
+	game_start_text = game_ui_text_builder("GRIDFIRE",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,40);
 	game_over_text = game_ui_text_builder("GAME OVER",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,30);
+	game_start_button_text = game_ui_text_builder("Start",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	/*-----------------------------------------------------------------------------
 	 *  Set up ingame ui
 	 *-----------------------------------------------------------------------------*/
@@ -83,7 +87,7 @@ int game_setup()
 	/*-----------------------------------------------------------------------------
 	 *  Set game state to running
 	 *-----------------------------------------------------------------------------*/
-	current_game_state = RUNNING;
+	current_game_state = GAMESTART;
 	return 0;
 }
 int game_load(char *configuration_path)
@@ -226,6 +230,47 @@ void game_run()
 				newpos.y = pos.y;
 				sfText_setPosition(game_over_text,newpos);
 				sfRenderWindow_drawText(main_window,game_over_text,NULL);
+				sfRenderWindow_display(main_window);	
+				break;
+
+			case GAMESTART:
+				sfRenderWindow_clear(main_window,clear_color);	
+				sfRenderWindow_pollEvent(main_window,&current_event);
+				switch(current_event.key.code)
+				{
+					case sfKeyEscape:
+						sfRenderWindow_close(main_window);
+						break;
+					case sfKeySpace:
+						current_game_state = RUNNING;
+						break;
+				}
+				sfVector2f pos_start = sfView_getCenter(main_view);
+				int text_offset_start = strlen(sfText_getString(game_start_text));
+				text_offset_start = text_offset_start * sfText_getCharacterSize(game_start_text);
+				sfVector2f newpos_start;
+				newpos_start.x	= pos_start.x + (text_offset_start /2 );
+				newpos_start.y = pos_start.y - (text_offset_start /2);
+				sfText_setPosition(game_start_text,newpos_start);
+
+				sfVector2f button_start;
+				button_start.x = newpos_start.x;
+				button_start.y = newpos_start.y + 50;
+				sfText_setPosition(game_start_button_text,button_start);
+
+				switch(text_yellow)
+				{
+					case 0:
+						sfText_setColor(game_start_button_text,sfColor_fromRGB(255,255,0));
+						text_yellow = 1;
+						break;
+					case 1:
+						sfText_setColor(game_start_button_text,sfColor_fromRGB(255,0,0));
+						text_yellow = 0;
+						break;
+				}
+				sfRenderWindow_drawText(main_window,game_start_button_text,NULL);
+				sfRenderWindow_drawText(main_window,game_start_text,NULL);
 				sfRenderWindow_display(main_window);	
 				break;
 		}
