@@ -62,7 +62,9 @@ int game_setup(jnx_hashmap *configuration)
 	videomode = sfVideoMode_getDesktopMode();
 	jnx_log("Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
-	sfRenderWindow_setFramerateLimit(main_window,60);
+	int max_fps = atoi(jnx_hash_get(config,"MAXFPS"));
+	assert(max_fps);
+	sfRenderWindow_setFramerateLimit(main_window,max_fps);
 	main_view = sfView_create();
 	sfVector2f view_size;
 	view_size.x = videomode.width;
@@ -284,10 +286,13 @@ void game_run()
 				{
 					case 0:
 						sfText_setColor(game_start_button_text,sfColor_fromRGB(255,255,0));
+						sfText_setColor(game_start_text,sfColor_fromRGB(255,255,0));
 						text_yellow = 1;
 						break;
 					case 1:
 						sfText_setColor(game_start_button_text,sfColor_fromRGB(255,0,0));
+						
+						sfText_setColor(game_start_text,sfColor_fromRGB(255,0,0));
 						text_yellow = 0;
 						break;
 				}

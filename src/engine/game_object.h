@@ -21,7 +21,7 @@
 #include <SFML/Graphics.h>
 #include <SFML/Window.h>
 #include "../utils/geometry.h"
-typedef enum { PLAYER,STATIONARY, MOVING, COMBAT } object_state;
+typedef enum { PLAYER,STATIONARY, MOVING, COMBAT,EVASION } object_state;
 typedef struct game_object{
 	sfSprite *sprite;
 	sfVector2f position;

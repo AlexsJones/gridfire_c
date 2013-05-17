@@ -26,35 +26,15 @@
 
 #define ENGAGEMENT_RANGE 500
 #define WIDTHDRAWAL_RANGE 1200
-
-int wait_flag = 0;
-
-void *set_wait_lock(void *args)
-{
-	sleep(1);
-	wait_flag = 1;
-	sleep(1);
-	wait_flag = 0;
-}
-int check_wait_lock()
-{
-	if(wait_flag == 0)
-	{
-		//enable wait lock
-		pthread_t _waithread;
-		pthread_create(&_waithread,NULL,set_wait_lock,NULL);
-	}
-	else
-	{
-		//locked
-		return 1;
-	}
-
-	return 0;
-}
+#define TRACKING_DISTANCE 1500
 void game_ai_update(game_object *object,game_object *player)
 {
 	float distance = geometry_distance(sfSprite_getPosition(object->sprite),sfSprite_getPosition(player->sprite));
+	
+	if(distance > TRACKING_DISTANCE) 
+	{
+		return;
+	}
 	sfVector2f player_pos = sfSprite_getPosition(player->sprite);
 	sfVector2f current_enemy_pos = sfSprite_getPosition(object->sprite);			
 	float res = 57.3065f * atan2(current_enemy_pos.y - player_pos.y,current_enemy_pos.x - player_pos.x) + 180;
@@ -78,10 +58,18 @@ void game_ai_update(game_object *object,game_object *player)
 		case COMBAT :
 				
 			if(distance > ENGAGEMENT_RANGE) { object->state = MOVING; break; }
-
-			if(check_wait_lock() == 0){			
-			weapon_fire(object);
+			if(object->health < 10)
+			{
+				object->state = EVASION;
 			}
+			weapon_fire(object);
 			break;
+		case EVASION:
+
+
+			break;			
+			/*-----------------------------------------------------------------------------
+			 *  Evasive maneuveurs if health is low
+			 *-----------------------------------------------------------------------------*/
 	}	
 }
