@@ -20,10 +20,14 @@
 #include <stdio.h>
 #include <jnxc_headers/jnxlog.h>
 #include <assert.h>
+/*-----------------------------------------------------------------------------
+ *  External ref to the configuration
+ *-----------------------------------------------------------------------------*/
+extern jnx_hashmap *config;
 sfSound *audio_control_build_sound(char *path)
 {
 	sfSoundBuffer *buffer = sfSoundBuffer_createFromFile(path);
-    sfSound *sound = sfSound_create();
+	sfSound *sound = sfSound_create();
 	sfSound_setBuffer(sound,buffer);
 	return sound;
 }
@@ -44,6 +48,12 @@ void audio_control_setup(void)
 }
 void play_music(music_type m)
 {
+	if(strcmp(jnx_hash_get(config,"MUSIC"),"OFF") == 0)
+	{
+		jnx_log("Music has been disabled\n");
+		return;
+	}
+
 	switch(m)
 	{
 		case TITLEMUSIC:
@@ -57,5 +67,9 @@ void play_music(music_type m)
 }
 void play_sound(sfSound *sound)
 {
+	if(strcmp(jnx_hash_get(config,"SOUND"),"OFF") == 0)
+	{
+		return;
+	}
 	sfSound_play(sound);
 }

@@ -28,6 +28,7 @@
 #include <SFML/Audio.h>
 #include "../logic/audio_control.h"
 #include <string.h>
+#include <assert.h>
 jnx_list *weapon_shot_list = NULL;
 jnx_list *temp_draw = NULL;
 typedef struct weapon_shot
@@ -35,17 +36,37 @@ typedef struct weapon_shot
 	sfSprite *sprite;
 	int damage;
 }weapon_shot;
+
+typedef enum weapon_type { PLASMA } weapon_type;
+
 /*-----------------------------------------------------------------------------
- *  Weapon sounds
+ *  Preloaded weapon sprites
  *-----------------------------------------------------------------------------*/
-sfSprite *weapon_create_sprite(game_object *parent,char *path)
+sfTexture *plasma_texture;
+sfSprite *weapon_create_sprite(game_object *parent,weapon_type _type)
 {
-	sfTexture *texture = sfTexture_createFromFile(path,NULL);
+	sfTexture *texture;
+	
+	switch(_type)
+	{
+	case PLASMA:
+		texture = plasma_texture;
+		break;
+	default:
+		texture = plasma_texture;
+		break;
+
+	}
+	
 	sfSprite *weapon = sfSprite_create();
 	sfSprite_setTexture(weapon,texture,1);
 	sfSprite_setPosition(weapon,sfSprite_getPosition(parent->sprite));
 	sfSprite_setRotation(weapon,sfSprite_getRotation(parent->sprite));
 	return weapon;
+}
+void weapon_setup()
+{
+	plasma_texture = sfTexture_createFromFile("res/plasma.png",NULL);
 }
 void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */)
 {
@@ -54,7 +75,16 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 		weapon_shot_list = jnx_list_init();
 	}
 	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
-	sfSprite *sprite = weapon_create_sprite(parent,"res/plasma.png");
+	sfSprite *sprite = NULL;
+	if(strcmp(parent->object_type,"player") == 0)
+	{
+		sprite = weapon_create_sprite(parent,PLASMA);
+	}
+	else
+	{
+		sprite = weapon_create_sprite(parent,PLASMA);
+	}
+	assert(sprite);
 	weapon_shot->damage = parent->weapon_damage;
 	weapon_shot->sprite = sprite;	
 	/*-----------------------------------------------------------------------------

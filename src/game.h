@@ -19,8 +19,15 @@
 #define __GAME_H__
 #include <SFML/Graphics.h>
 #include <SFML/Window.h>
-int game_setup(void);
+#include <jnxc_headers/jnxhash.h>
+int game_setup(jnx_hashmap *configptr);
 int game_load(char *configuration_path);
 void game_run(void);
 void game_end(void);
+
+
+/*-----------------------------------------------------------------------------
+ *  Globally accessible
+ *-----------------------------------------------------------------------------*/
+jnx_hashmap *config;
 #endif

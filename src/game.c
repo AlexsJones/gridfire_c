@@ -44,6 +44,7 @@ sfClock *clock;
  *-----------------------------------------------------------------------------*/
 sfText *game_over_text = NULL;
 sfText *game_start_text = NULL;
+sfText *game_author_text = NULL;
 sfText *game_start_button_text = NULL;
 int text_yellow = 1;
 /*-----------------------------------------------------------------------------
@@ -52,8 +53,12 @@ int text_yellow = 1;
 game_object *player = NULL;
 typedef enum { GAMESTART,RUNNING, GAMEOVER } game_state;
 game_state current_game_state;
-int game_setup()
+int game_setup(jnx_hashmap *configuration)
 {
+	assert(configuration);
+	config = configuration;
+	assert(config);
+
 	videomode = sfVideoMode_getDesktopMode();
 	jnx_log("Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
@@ -77,11 +82,15 @@ int game_setup()
 	game_start_text = game_ui_text_builder("GRIDFIRE",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,40);
 	game_over_text = game_ui_text_builder("GAME OVER",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,30);
 	game_start_button_text = game_ui_text_builder("Start",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
+	game_author_text = game_ui_text_builder("By Alex Jones",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	/*-----------------------------------------------------------------------------
 	 *  Set up ingame ui
 	 *-----------------------------------------------------------------------------*/
-	
-	
+
+	/*-----------------------------------------------------------------------------
+	 *  Load weapon textures
+	 *-----------------------------------------------------------------------------*/
+	weapon_setup();
 	/*-----------------------------------------------------------------------------
 	 *  Load ingame music
 	 *-----------------------------------------------------------------------------*/
@@ -267,6 +276,10 @@ void game_run()
 				button_start.y = newpos_start.y + 50;
 				sfText_setPosition(game_start_button_text,button_start);
 
+				button_start.y = button_start.y + 50;
+
+				sfText_setPosition(game_author_text,button_start);
+
 				switch(text_yellow)
 				{
 					case 0:
@@ -278,7 +291,7 @@ void game_run()
 						text_yellow = 0;
 						break;
 				}
-	
+
 				jnx_list *menu_starfield = starfield_menu_create(main_view);
 				jnx_node *head = menu_starfield->head;
 				while(menu_starfield->head)
@@ -297,6 +310,7 @@ void game_run()
 				menu_starfield->head = head;
 				sfRenderWindow_drawText(main_window,game_start_button_text,NULL);
 				sfRenderWindow_drawText(main_window,game_start_text,NULL);
+				sfRenderWindow_drawText(main_window,game_author_text,NULL);
 				sfRenderWindow_display(main_window);	
 				break;
 		}
