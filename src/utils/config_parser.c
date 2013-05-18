@@ -22,7 +22,7 @@
 #include <jnxc_headers/jnxlog.h>
 #include <jnxc_headers/jnxfile.h>
 
-enum instruction_type { OBJECT_TYPE, TEXTURE_DATA, LOC_X, LOC_Y, HEALTH, ROTATION,VELOCITY,WEAPON_DAMAGE } instruction_type;
+enum instruction_type { OBJECT_TYPE, TEXTURE_DATA, LOC_X, LOC_Y, HEALTH, ROTATION,VELOCITY,WEAPON_DAMAGE,WEAPON_TYPE } instruction_type;
 char *strip_newline(char *s)
 {
 	char *p2 = s;
@@ -36,9 +36,26 @@ char *strip_newline(char *s)
 	}
 	*p2='\0';
 }
-data_object* process_line(char *line)
+sfSprite *sprite_from_texture(char *path)
 {
-	data_object *data = malloc(sizeof(data_object));
+	sfSprite *objsprite = sfSprite_create();
+	sfTexture *_texture = sfTexture_createFromFile(path,NULL);
+	sfSprite_setTexture(objsprite,_texture,1);
+	sfVector2u texture_origin = sfTexture_getSize(_texture);
+	float _x = (float)texture_origin.x;
+	float _y = (float)texture_origin.y;
+	sfVector2f new_org;
+	new_org.x = _x /2 ;
+	new_org.y = _y /2 ;
+	sfSprite_setOrigin(objsprite,new_org);
+
+	return objsprite;
+}
+game_object* process_line(char *line)
+{
+	game_object *data = malloc(sizeof(game_object));
+
+
 	char *head_line = line;
 	int counter = 0;
 	int instruction_number = 0;
@@ -60,14 +77,13 @@ data_object* process_line(char *line)
 					strcpy(data->object_type,temp);
 					break;
 				case TEXTURE_DATA:
-					data->texture_data_path = malloc(strlen(temp));
-					strcpy(data->texture_data_path,temp);
+					data->sprite = sprite_from_texture(temp);	
 					break;
 				case LOC_X:
-					data->x = atoi(temp);
+					data->position.x = atoi(temp);
 					break;
 				case LOC_Y:
-					data->y = atoi(temp);
+					data->position.y = atoi(temp);
 					break;
 				case HEALTH:
 					data->health = atoi(temp);
@@ -81,6 +97,9 @@ data_object* process_line(char *line)
 				case WEAPON_DAMAGE:
 					data->weapon_damage = (int)atoi(temp);
 					break;
+				case WEAPON_TYPE:
+					data->weapon = (int)atoi(temp);
+					break;
 			}
 			++instruction_number;
 			counter = 0;
@@ -90,7 +109,24 @@ data_object* process_line(char *line)
 		}
 		head_line++;
 	}
-	printf("Object created %s %d %d %d %g\n",data->texture_data_path,data->x,data->y,data->health,data->rotation);
+
+	if(strcmp(data->object_type,"player") == 0)
+	{
+		data->state = PLAYER;
+	}
+	else if(data->velocity = 0)
+	{
+		data->state = STATIONARY;
+	}
+	else
+	{
+		data->state = MOVING;
+	}
+	/*-----------------------------------------------------------------------------
+	 *  Not forgetting to set sprite rotation and position
+	 *-----------------------------------------------------------------------------*/
+	sfSprite_setPosition(data->sprite,data->position);
+	sfSprite_rotate(data->sprite,data->rotation);
 	return data;
 }
 jnx_list* config_parser_load_configuration(char *path)

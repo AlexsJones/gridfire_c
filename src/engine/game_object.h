@@ -21,6 +21,7 @@
 #include <SFML/Graphics.h>
 #include <SFML/Window.h>
 #include "../utils/geometry.h"
+typedef enum weapon_type { PLASMA,LASER } weapon_type;
 typedef enum { PLAYER,STATIONARY, MOVING, COMBAT,EVASION } object_state;
 typedef struct game_object{
 	sfSprite *sprite;
@@ -31,6 +32,7 @@ typedef struct game_object{
 	float velocity;
 	int weapon_damage;
 	object_state state;
+	weapon_type weapon;
 }game_object;
 void game_object_update(game_object *obj, sfEvent event,sfView *view);
 square* game_object_get_bounds(game_object *obj);

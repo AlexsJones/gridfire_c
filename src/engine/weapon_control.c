@@ -29,35 +29,40 @@
 #include "../logic/audio_control.h"
 #include <string.h>
 #include <assert.h>
+#include <jnxc_headers/jnxhash.h>
 jnx_list *weapon_shot_list = NULL;
 jnx_list *temp_draw = NULL;
+#ifndef ALLOWINVUL
+#define ALLOWINVUL
+#endif
 typedef struct weapon_shot
 {
 	sfSprite *sprite;
 	int damage;
 }weapon_shot;
 
-typedef enum weapon_type { PLASMA } weapon_type;
-
+extern jnx_hashmap *config;
 /*-----------------------------------------------------------------------------
  *  Preloaded weapon sprites
  *-----------------------------------------------------------------------------*/
 sfTexture *plasma_texture;
-sfSprite *weapon_create_sprite(game_object *parent,weapon_type _type)
+sfTexture *laser_texture;
+sfSprite *weapon_create_sprite(game_object *parent)
 {
 	sfTexture *texture;
-	
-	switch(_type)
+	switch(parent->weapon)
 	{
-	case PLASMA:
-		texture = plasma_texture;
-		break;
-	default:
-		texture = plasma_texture;
-		break;
+		case PLASMA:
+			texture = plasma_texture;
+			break;
+		case LASER:
+			texture = laser_texture;
+			break;
+		default:
+			texture = plasma_texture;
+			break;
 
 	}
-	
 	sfSprite *weapon = sfSprite_create();
 	sfSprite_setTexture(weapon,texture,1);
 	sfSprite_setPosition(weapon,sfSprite_getPosition(parent->sprite));
@@ -67,6 +72,7 @@ sfSprite *weapon_create_sprite(game_object *parent,weapon_type _type)
 void weapon_setup()
 {
 	plasma_texture = sfTexture_createFromFile("res/plasma.png",NULL);
+	laser_texture = sfTexture_createFromFile("res/laser.png",NULL);
 }
 void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */)
 {
@@ -75,15 +81,7 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 		weapon_shot_list = jnx_list_init();
 	}
 	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
-	sfSprite *sprite = NULL;
-	if(strcmp(parent->object_type,"player") == 0)
-	{
-		sprite = weapon_create_sprite(parent,PLASMA);
-	}
-	else
-	{
-		sprite = weapon_create_sprite(parent,PLASMA);
-	}
+	sfSprite *sprite = weapon_create_sprite(parent);
 	assert(sprite);
 	weapon_shot->damage = parent->weapon_damage;
 	weapon_shot->sprite = sprite;	
@@ -98,11 +96,11 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 
 	if(strcmp(parent->object_type,"player") == 0)
 	{
-	play_sound(sound_laser2);
+		play_sound(sound_laser2);
 	}else
 	{
-	play_sound(sound_laser);
-}
+		play_sound(sound_laser);
+	}
 }
 void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 {
@@ -114,7 +112,16 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 		square *game_object_size = game_object_get_bounds(obj);		
 		if(geometry_contains(game_object_size,sfSprite_getPosition(current->sprite)))
 		{
+#ifdef ALLOWINVUL
+			if(strcmp(obj->object_type,"player") == 0 && strcmp(jnx_hash_get(config,"PLAYERINVUL"),"ON") == 0)
+			{
+
+			}else{
+#endif
 			obj->health = obj->health - current->damage;
+#ifdef ALLOWINVUL
+			}
+#endif
 			//destroy the ship if health is 0
 		}	
 		free(game_object_size);

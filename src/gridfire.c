@@ -27,7 +27,6 @@
 #define GAMELOG "log/game.log"
 
 
-
 jnx_hashmap *create_configuration()
 {
 	jnx_file_kvp_node *node = jnx_file_read_keyvaluepairs(GAMESETTINGS,"=");

@@ -93,6 +93,5 @@ void cartographer_update()
 		}
 		head = head->next_node;
 	}
-
 	object_list = new_draw;
 }

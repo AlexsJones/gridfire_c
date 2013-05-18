@@ -16,7 +16,6 @@
  * =====================================================================================
  */
 #include <stdlib.h>
-#include "engine/object_builder.h"
 #include "engine/game_object.h"
 #include "engine/starfield.h"
 #include "logic/cartographer.h"
@@ -120,34 +119,19 @@ int game_load(char *configuration_path)
 
 	while(head)
 	{
-		data_object *obj = (data_object*)head->_data;
-		/*-----------------------------------------------------------------------------
-		 *  Here we transfer ownership from the configuration list to the draw queue
-		 *  This also involves a conversion element to produce a sprite object
-		 *-----------------------------------------------------------------------------*/
-		game_object *game_obj = object_builder_create(obj->object_type,obj->texture_data_path,obj->x,obj->y,obj->health,obj->rotation,obj->velocity,obj->weapon_damage);
-
-
+		game_object *obj = (game_object*)head->_data;
 		/*-----------------------------------------------------------------------------
 		 *  Setup a pointer to player
 		 *-----------------------------------------------------------------------------*/
-		if(strcmp(game_obj->object_type,"player") == 0)
+		if(strcmp(obj->object_type,"player") == 0)
 		{
-			player = game_obj;
+			player = obj;
 		}	
-		cartographer_add(game_obj);
+		cartographer_add(obj);
 		head = head->next_node;
-	}
-	while(configuration_list->head)
-	{
-		jnx_node *current_head = configuration_list->head;
-		jnx_node *next_node = configuration_list->head->next_node;
-		free(current_head);
-		configuration_list->head = next_node;
 	}
 	jnx_list_delete(configuration_list);
 	head = NULL;
-
 	if(player == NULL)
 	{
 		jnx_log("Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
@@ -216,7 +200,7 @@ void game_run()
 						 *-----------------------------------------------------------------------------*/
 						game_ai_update(obj,player);	
 					}
-#ifdef DEBUG
+#ifdef BOUNDING_BOX
 					sfRectangleShape *bounding = game_object_get_boundingRect(obj);
 					sfRenderWindow_drawRectangleShape(main_window,bounding,NULL);
 					sfRectangleShape_destroy(bounding);
