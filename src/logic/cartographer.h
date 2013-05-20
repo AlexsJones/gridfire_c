@@ -24,6 +24,6 @@
 void cartographer_setbounds(int top, int bottom, int left, int right);
 square *cartographer_getbounds(void);
 void cartographer_add(game_object *obj);
-jnx_list *cartographer_get_at(sfVector2f position);
+jnx_list *cartographer_get_at(sfView *view);
 void cartographer_update();
 #endif

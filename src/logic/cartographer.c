@@ -34,17 +34,33 @@ void cartographer_add(game_object *obj)
 	 *-----------------------------------------------------------------------------*/
 	jnx_list_add(object_list,obj);
 }
-jnx_list *cartographer_get_at(sfVector2f position)
+jnx_list *cartographer_get_at(sfView *view)
 {
-
 	/*-----------------------------------------------------------------------------
 	 *  Again a temporary solution to return the entire list
 	 *-----------------------------------------------------------------------------*/
-
+	sfVector2f position = sfView_getCenter(view);
+	int view_max_size = sfView_getSize(view).x;
+	jnx_node *head = object_list->head;
+	jnx_node *head_reset = head;
+	jnx_list *temp_list = jnx_list_init();	
+	int count = 0;
+	while(head)
+	{
+		game_object *obj = head->_data;
+		sfVector2f obj_pos = sfSprite_getPosition(obj->sprite);
+		if(obj_pos.x < position.x + view_max_size && obj_pos.x > position.x - view_max_size && obj_pos.y < position.y + view_max_size && obj_pos.y > position.y - view_max_size)
+		{
+			jnx_list_add(temp_list,obj);
+			++count;
+		}
+		head = head->next_node;
+	}
+	head = head_reset;
 	/*-----------------------------------------------------------------------------
 	 *  Note, that you probably don't want to return the original list ever as any manipulation outside of this functionality could cause error
 	 *-----------------------------------------------------------------------------*/
-	return object_list;
+	return temp_list;
 }
 void cartographer_setbounds(int top, int bottom, int left, int right)
 {

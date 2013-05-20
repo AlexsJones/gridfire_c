@@ -174,7 +174,7 @@ void game_run()
 				/*-----------------------------------------------------------------------------
 				 *  Draw objects
 				 *-----------------------------------------------------------------------------*/
-				jnx_list *draw_queue = cartographer_get_at(sfView_getCenter(main_view));
+				jnx_list *draw_queue = cartographer_get_at(main_view);
 				jnx_node *current_draw_pos = draw_queue->head; 
 				/*-----------------------------------------------------------------------------
 				 *  Draw weapon fire
@@ -213,6 +213,7 @@ void game_run()
 				 *-----------------------------------------------------------------------------*/
 				sfRenderWindow_display(main_window);
 				cartographer_update();
+				jnx_list_delete(draw_queue);
 				break;
 
 			case GAMEOVER:

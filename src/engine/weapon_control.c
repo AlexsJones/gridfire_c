@@ -89,8 +89,8 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later
 	 *-----------------------------------------------------------------------------*/
 	sfVector2f move_offset;
-	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 100.0f;
-	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 100.0f ;
+	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * (45.0f + parent->velocity);
+	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * (45.0f  + parent->velocity);
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 
@@ -161,8 +161,8 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
 		sfVector2f move_offset;
-		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f;
-		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 100.0f ;
+		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 40.0f;
+		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 40.0f ;
 		sfSprite_move(current->sprite,move_offset);
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot collides with anything drawn

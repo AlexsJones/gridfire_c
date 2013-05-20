@@ -6,7 +6,7 @@
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  04/27/13 20:33:02
+ *        Created:  04/27/13 20.73:02
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -30,19 +30,19 @@ void game_object_update(game_object *obj, sfEvent event,sfView *view)
 	{
 		if(sfKeyboard_isKeyPressed(sfKeyW))
 		{
-			obj->velocity = obj->velocity + 0.3f;
+			obj->velocity = obj->velocity + 0.7f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyS))
 		{
-			obj->velocity = obj->velocity - 0.3f;
+			obj->velocity = obj->velocity - 0.7f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyA))
 		{
-			obj->rotation = obj->rotation - 0.2f;
+			obj->rotation = obj->rotation - 0.4f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyD))
 		{
-			obj->rotation = obj->rotation + 0.2f;
+			obj->rotation = obj->rotation + 0.4f;
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyZ))
 		{
