@@ -22,7 +22,7 @@
 #include <SFML/Window.h>
 #include "../utils/geometry.h"
 typedef enum weapon_type { PLASMA,LASER } weapon_type;
-typedef enum { PLAYER,STATIONARY, MOVING, COMBAT,EVASION } object_state;
+typedef enum { PLAYER,STATIONARY, MOVING, COMBAT,EVASION,HEALTH_CONTAINER } object_state;
 typedef struct game_object{
 	sfSprite *sprite;
 	sfVector2f position;

@@ -41,9 +41,15 @@ void audio_control_setup(void)
 	assert(sound_laser2);
 	sound_laser3 = audio_control_build_sound("res/laser03.flac");
 	assert(sound_laser3);
-	title_music = sfMusic_createFromFile("res/shiny-ship.flac");
+
+
+	/*-----------------------------------------------------------------------------
+	 *  Game music
+	 *-----------------------------------------------------------------------------*/
+
+	title_music = sfMusic_createFromFile("res/rise_of_space.flac");
 	assert(title_music);
-	game_music = sfMusic_createFromFile("res/starpause.flac");
+	game_music = sfMusic_createFromFile("res/gravity_time.flac");
 	assert(game_music);
 }
 void play_music(music_type m)

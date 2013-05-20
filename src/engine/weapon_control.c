@@ -89,8 +89,8 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later
 	 *-----------------------------------------------------------------------------*/
 	sfVector2f move_offset;
-	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 40.0f;
-	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 40.0f ;
+	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 100.0f;
+	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * 100.0f ;
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 
@@ -118,7 +118,7 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 
 			}else{
 #endif
-			obj->health = obj->health - current->damage;
+				obj->health = obj->health - current->damage;
 #ifdef ALLOWINVUL
 			}
 #endif

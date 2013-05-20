@@ -114,6 +114,10 @@ game_object* process_line(char *line)
 	{
 		data->state = PLAYER;
 	}
+	else if(strcmp(data->object_type,"health") == 0 )
+	{
+		data->state = HEALTH_CONTAINER;
+	}
 	else if(data->velocity = 0)
 	{
 		data->state = STATIONARY;

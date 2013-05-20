@@ -30,8 +30,6 @@
 #include "engine/game_ui.h"
 #include "logic/audio_control.h"
 #include <SFML/Audio.h>
-#define GAMEBOUNDSSIZE 25000
-#define STARFIELDDENSITY 100000
 sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
@@ -73,8 +71,10 @@ int game_setup(jnx_hashmap *configuration)
 	jnx_log("Creating game clock\n");
 	clock = sfClock_create();
 	jnx_log("Creating bounding map\n");
-	cartographer_setbounds(0,GAMEBOUNDSSIZE,0,GAMEBOUNDSSIZE);
-	starfield_create(cartographer_getbounds(),STARFIELDDENSITY);
+	int game_bound = atoi(jnx_hash_get(configuration,"GAMEBOUNDS"));
+	cartographer_setbounds(0,game_bound,0,game_bound);
+	int star_density = atoi(jnx_hash_get(configuration,"STARCOUNT"));
+	starfield_create(cartographer_getbounds(),star_density);
 	jnx_log("Initial setup complete\n");	
 
 	/*-----------------------------------------------------------------------------
@@ -287,7 +287,7 @@ void game_run()
 				{
 					sfSprite *sprite = menu_starfield->head->_data;
 					sfVector2f pos = sfSprite_getPosition(sprite);
-					pos.y = pos.y +1;
+					pos.y = pos.y +5;
 					if(pos.y > sfView_getSize(main_view).y)
 					{
 						pos.y = 0;

@@ -73,5 +73,18 @@ void game_ai_update(game_object *object,game_object *player)
 			move_offset.y = sin(sfSprite_getRotation(object->sprite) * 3.14159265 / 180) * -5.0f ;
 			sfSprite_move(object->sprite,move_offset);
 			break;	
+
+		case HEALTH_CONTAINER:
+
+			if(distance < 50)
+			{
+				player->health += object->health;
+				/*-----------------------------------------------------------------------------
+				 *  Destroy the health container and transfer health to the player
+				 *-----------------------------------------------------------------------------*/
+				object->health = 0;
+			}
+			break;
+
 	}	
 }
