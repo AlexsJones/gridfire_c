@@ -64,15 +64,11 @@ do
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
-
-			
 				;;	
-		
 			esac
-			
 			;;
 		health)
-			num_health=$(($ENEMY_NUMBER/2))
+			num_health=$(($ENEMY_NUMBER/8))
 			echo $num_health
 			for ((n = 0; n<$num_health;n++))
 			do
