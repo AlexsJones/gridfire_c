@@ -47,6 +47,7 @@ extern jnx_hashmap *config;
  *-----------------------------------------------------------------------------*/
 sfTexture *plasma_texture;
 sfTexture *laser_texture;
+sfTexture *dual_laser_texture;
 sfSprite *weapon_create_sprite(game_object *parent)
 {
 	sfTexture *texture;
@@ -57,6 +58,9 @@ sfSprite *weapon_create_sprite(game_object *parent)
 			break;
 		case LASER:
 			texture = laser_texture;
+			break;
+		case DUALLASER:
+			texture = dual_laser_texture;
 			break;
 		default:
 			texture = plasma_texture;
@@ -73,6 +77,7 @@ void weapon_setup()
 {
 	plasma_texture = sfTexture_createFromFile("res/plasma.png",NULL);
 	laser_texture = sfTexture_createFromFile("res/laser.png",NULL);
+	dual_laser_texture = sfTexture_createFromFile("res/dual_laser.png",NULL);
 }
 void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */)
 {
