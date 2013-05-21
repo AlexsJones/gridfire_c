@@ -50,8 +50,8 @@ void game_ai_update(game_object *object,game_object *player)
 			if(distance < ENGAGEMENT_RANGE) { object->state = COMBAT; }
 			sfVector2f move_offset;
 			sfSprite_setRotation(object->sprite,+res);
-			move_offset.x = cos(sfSprite_getRotation(object->sprite) * 3.14159265 / 180) * 10.0f;
-			move_offset.y = sin(sfSprite_getRotation(object->sprite) * 3.14159265 / 180) * 10.0f ;
+			move_offset.x = cos(sfSprite_getRotation(object->sprite) * 3.14159265 / 180) * object->maxspeed;
+			move_offset.y = sin(sfSprite_getRotation(object->sprite) * 3.14159265 / 180) * object->maxspeed;
 			sfSprite_move(object->sprite,move_offset);
 
 			break;

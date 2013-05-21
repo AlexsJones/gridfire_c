@@ -26,6 +26,7 @@ typedef enum { PLAYER,STATIONARY, MOVING, COMBAT,EVASION,HEALTH_CONTAINER } obje
 typedef struct game_object{
 	sfSprite *sprite;
 	sfVector2f position;
+	int maxspeed;
 	int health;
 	float rotation;
 	char *object_type;

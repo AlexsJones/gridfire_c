@@ -37,6 +37,7 @@ jnx_list *temp_draw = NULL;
 #endif
 typedef struct weapon_shot
 {
+	game_object *parent;
 	sfSprite *sprite;
 	int damage;
 }weapon_shot;
@@ -96,13 +97,15 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	sfSprite *sprite = weapon_create_sprite(parent);
 	assert(sprite);
 	weapon_shot->damage = parent->weapon_damage;
+
 	weapon_shot->sprite = sprite;	
 	/*-----------------------------------------------------------------------------
 	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later
 	 *-----------------------------------------------------------------------------*/
 	sfVector2f move_offset;
-	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * (45.0f + parent->velocity);
-	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * (45.0f  + parent->velocity);
+	sfVector2u size = sfTexture_getSize(sfSprite_getTexture(parent->sprite));
+	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x;
+	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x;	
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 
@@ -124,18 +127,14 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 		square *game_object_size = game_object_get_bounds(obj);		
 		if(geometry_contains(game_object_size,sfSprite_getPosition(current->sprite)))
 		{
-#ifdef ALLOWINVUL
 			if(strcmp(obj->object_type,"player") == 0 && strcmp(jnx_hash_get(config,"PLAYERINVUL"),"ON") == 0)
 			{
+			}else
+			{
+				obj->health -=current->damage;	
 
-			}else{
-#endif
-				obj->health = obj->health - current->damage;
-#ifdef ALLOWINVUL
-			}
-#endif
-			//destroy the ship if health is 0
-		}	
+			}	
+		}
 		free(game_object_size);
 		dqueue_head = dqueue_head->next_node;
 	}

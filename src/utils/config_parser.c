@@ -22,7 +22,7 @@
 #include <jnxc_headers/jnxlog.h>
 #include <jnxc_headers/jnxfile.h>
 
-enum instruction_type { OBJECT_TYPE, TEXTURE_DATA, LOC_X, LOC_Y, HEALTH, ROTATION,VELOCITY,WEAPON_DAMAGE,WEAPON_TYPE } instruction_type;
+enum instruction_type { OBJECT_TYPE, TEXTURE_DATA, LOC_X, LOC_Y,MAXSPEED, HEALTH, ROTATION,VELOCITY,WEAPON_DAMAGE,WEAPON_TYPE } instruction_type;
 char *strip_newline(char *s)
 {
 	char *p2 = s;
@@ -84,6 +84,9 @@ game_object* process_line(char *line)
 					break;
 				case LOC_Y:
 					data->position.y = atoi(temp);
+					break;
+				case MAXSPEED:
+					data->maxspeed = atoi(temp);
 					break;
 				case HEALTH:
 					data->health = atoi(temp);
