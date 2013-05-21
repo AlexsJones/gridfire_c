@@ -22,6 +22,11 @@ do
 				echo $LINE >> $CONF_PATH	
 			;;
 		enemy) 
+			obj_image=`echo $LINE | cut -d '{' -f2 | cut -d ',' -f2`
+			case "$obj_image" in
+
+			res/cruiser.png)
+			echo "Fuelling cruisers..."
 			for ((n = 0; n<$ENEMY_NUMBER;n++))
 			do
 				POSX=$(($RANDOM%$MAPSIZE))
@@ -29,9 +34,45 @@ do
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
+				;;
+			res/tanker.png)
+			echo "Buliding tankers..."
+			for ((n = 0; n<$ENEMY_NUMBER;n++))
+			do
+				POSX=$(($RANDOM%$MAPSIZE))
+				POSY=$(($RANDOM%$MAPSIZE))
+				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+				echo $new_enemy >> $CONF_PATH
+			done	
+				;;
+			res/battlecruiser.png)
+			echo "Arming battlecruisers..."
+			for ((n = 0; n<$ENEMY_NUMBER /2;n++))
+			do
+				POSX=$(($RANDOM%$MAPSIZE))
+				POSY=$(($RANDOM%$MAPSIZE))
+				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+				echo $new_enemy >> $CONF_PATH
+			done	
+				;;
+			res/battleship.png)
+			echo "Polishing battleships..."
+			for ((n = 0; n<$ENEMY_NUMBER /4;n++))
+			do
+				POSX=$(($RANDOM%$MAPSIZE))
+				POSY=$(($RANDOM%$MAPSIZE))
+				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+				echo $new_enemy >> $CONF_PATH
+			done	
+
+			
+				;;	
+		
+			esac
+			
 			;;
 		health)
-			num_health=$((100*10/$ENEMY_NUMBER))
+			num_health=$(($ENEMY_NUMBER/2))
 			echo $num_health
 			for ((n = 0; n<$num_health;n++))
 			do
