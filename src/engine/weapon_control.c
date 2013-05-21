@@ -71,6 +71,13 @@ sfSprite *weapon_create_sprite(game_object *parent)
 	sfSprite_setTexture(weapon,texture,1);
 	sfSprite_setPosition(weapon,sfSprite_getPosition(parent->sprite));
 	sfSprite_setRotation(weapon,sfSprite_getRotation(parent->sprite));
+	sfVector2u texture_origin = sfTexture_getSize(texture);
+	float _x = (float)texture_origin.x;
+	float _y = (float)texture_origin.y;
+	sfVector2f new_org;
+	new_org.x = _x /2 ;
+	new_org.y = _y /2 ;
+	sfSprite_setOrigin(weapon,new_org);
 	return weapon;
 }
 void weapon_setup()
