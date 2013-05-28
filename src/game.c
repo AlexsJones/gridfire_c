@@ -93,7 +93,7 @@ int game_setup(jnx_hashmap *configuration)
 	game_over_text = game_ui_text_builder("GAME OVER",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,30);
 	game_start_button_text = game_ui_text_builder("Start",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	game_author_text = game_ui_text_builder("By Alex Jones",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
-	next_level_text = game_ui_text_builder("Congratulations!",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,45);
+	next_level_text = game_ui_text_builder("Congratulations",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,45);
 	assert(game_start_text);
 	assert(game_over_text);
 	assert(game_start_button_text);
