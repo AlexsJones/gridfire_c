@@ -24,7 +24,7 @@
 #include "../engine/weapon_control.h"
 #include "../utils/geometry.h"
 
-#define ENGAGEMENT_RANGE 500
+#define ENGAGEMENT_RANGE 700
 #define WIDTHDRAWAL_RANGE 1200
 #define TRACKING_DISTANCE 1500
 void game_ai_update(game_object *object,game_object *player)
@@ -76,7 +76,7 @@ void game_ai_update(game_object *object,game_object *player)
 
 		case HEALTH_CONTAINER:
 
-			if(distance < 50)
+			if(distance < 150)
 			{
 				player->health += object->health;
 				/*-----------------------------------------------------------------------------

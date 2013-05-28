@@ -37,9 +37,9 @@ jnx_list *temp_draw = NULL;
 #endif
 typedef struct weapon_shot
 {
-	game_object *parent;
 	sfSprite *sprite;
 	int damage;
+	int max_velocity;
 }weapon_shot;
 
 extern jnx_hashmap *config;
@@ -48,9 +48,24 @@ extern jnx_hashmap *config;
  *-----------------------------------------------------------------------------*/
 sfTexture *plasma_texture;
 sfTexture *laser_texture;
+sfTexture *laser2_texture;
 sfTexture *dual_laser_texture;
-sfSprite *weapon_create_sprite(game_object *parent)
+sfTexture *turbolaser_texture;
+void weapon_setup()
 {
+	plasma_texture = sfTexture_createFromFile("res/plasma.png",NULL);
+	laser_texture = sfTexture_createFromFile("res/laser.png",NULL);
+	laser2_texture = sfTexture_createFromFile("res/laser2.png",NULL);
+	dual_laser_texture = sfTexture_createFromFile("res/dual_laser.png",NULL);
+	turbolaser_texture = sfTexture_createFromFile("res/laser_turbo.png",NULL);
+}
+void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */)
+{
+	if(weapon_shot_list == NULL)
+	{
+		weapon_shot_list = jnx_list_init();
+	}
+	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
 	sfTexture *texture;
 	switch(parent->weapon)
 	{
@@ -62,6 +77,12 @@ sfSprite *weapon_create_sprite(game_object *parent)
 			break;
 		case DUALLASER:
 			texture = dual_laser_texture;
+			break;
+		case LASER2:
+			texture = laser2_texture;
+			break;
+		case TURBO_LASER:
+			texture = turbolaser_texture;
 			break;
 		default:
 			texture = plasma_texture;
@@ -79,29 +100,9 @@ sfSprite *weapon_create_sprite(game_object *parent)
 	new_org.x = _x /2 ;
 	new_org.y = _y /2 ;
 	sfSprite_setOrigin(weapon,new_org);
-	return weapon;
-}
-void weapon_setup()
-{
-	plasma_texture = sfTexture_createFromFile("res/plasma.png",NULL);
-	laser_texture = sfTexture_createFromFile("res/laser.png",NULL);
-	dual_laser_texture = sfTexture_createFromFile("res/dual_laser.png",NULL);
-}
-void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc... */)
-{
-	if(weapon_shot_list == NULL)
-	{
-		weapon_shot_list = jnx_list_init();
-	}
-	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
-	sfSprite *sprite = weapon_create_sprite(parent);
-	assert(sprite);
 	weapon_shot->damage = parent->weapon_damage;
-
-	weapon_shot->sprite = sprite;	
-	/*-----------------------------------------------------------------------------
-	 *  Setting the initial start position infront of the parent sprite so it doesnt confuse later
-	 *-----------------------------------------------------------------------------*/
+	weapon_shot->sprite = weapon;	
+	weapon_shot->max_velocity = parent->maxspeed;
 	sfVector2f move_offset;
 	sfVector2u size = sfTexture_getSize(sfSprite_getTexture(parent->sprite));
 	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x;
@@ -132,7 +133,6 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 			}else
 			{
 				obj->health -=current->damage;	
-
 			}	
 		}
 		free(game_object_size);
@@ -172,8 +172,8 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 	{	
 		weapon_shot *current = (weapon_shot*)head->_data;
 		sfVector2f move_offset;
-		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 40.0f;
-		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * 40.0f ;
+		move_offset.x = cos(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * current->max_velocity;
+		move_offset.y = sin(sfSprite_getRotation(current->sprite) * 3.14159265 / 180) * current->max_velocity;
 		sfSprite_move(current->sprite,move_offset);
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot collides with anything drawn
@@ -189,5 +189,6 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 		head = head->next_node;
 	}
 	free(view_bounds);
-	weapon_shot_list = temp;	
+	jnx_list_delete(weapon_shot_list);
+	weapon_shot_list = temp;
 }

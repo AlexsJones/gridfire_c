@@ -19,7 +19,10 @@ do
 	case "$object_type" in
 
 		player)
-				echo $LINE >> $CONF_PATH	
+				POSX=$(($MAPSIZE/2))
+				POSY=$(($MAPSIZE/2))
+				player=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+				echo $player >> $CONF_PATH	
 			;;
 		enemy) 
 			obj_image=`echo $LINE | cut -d '{' -f2 | cut -d ',' -f2`

@@ -29,13 +29,13 @@
 #include <stdio.h>
 #include "engine/game_ui.h"
 #include "logic/audio_control.h"
+#include "logic/scoreboard.h"
 #include <SFML/Audio.h>
 sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
 sfClock *clock;
-
 /*-----------------------------------------------------------------------------
  *  Game text
  *-----------------------------------------------------------------------------*/
@@ -67,6 +67,7 @@ int game_setup(jnx_hashmap *configuration)
 	view_size.x = videomode.width;
 	view_size.y = videomode.height;
 	sfView_setSize(main_view,view_size);
+
 	clear_color = sfColor_fromRGB(0,0,0);
 	jnx_log("Creating game clock\n");
 	clock = sfClock_create();
@@ -88,6 +89,11 @@ int game_setup(jnx_hashmap *configuration)
 	 *  Set up ingame ui
 	 *-----------------------------------------------------------------------------*/
 
+
+	/*-----------------------------------------------------------------------------
+	 *  Scoreboard setup
+	 *-----------------------------------------------------------------------------*/
+	score_setup();
 	/*-----------------------------------------------------------------------------
 	 *  Load weapon textures
 	 *-----------------------------------------------------------------------------*/
@@ -138,6 +144,9 @@ int game_load(char *configuration_path)
 		return 1;
 	}
 
+	/*-----------------------------------------------------------------------------
+	 *  Start results
+	 *-----------------------------------------------------------------------------*/
 	jnx_log("Done\n");
 	return 0;
 }
@@ -240,12 +249,18 @@ void game_run()
 			case GAMESTART:
 				sfRenderWindow_clear(main_window,clear_color);	
 				sfRenderWindow_pollEvent(main_window,&current_event);
+				int game_bound = atoi(jnx_hash_get(config,"GAMEBOUNDS"));
+				sfVector2f viewpos;
 				switch(current_event.key.code)
 				{
 					case sfKeyEscape:
 						sfRenderWindow_close(main_window);
 						break;
 					case sfKeySpace:
+
+						viewpos.x = game_bound /2;
+						viewpos.y = game_bound /2;
+						sfView_setCenter(main_view,viewpos);
 						play_music(INGAMEMUSIC);
 						current_game_state = RUNNING;
 						break;
@@ -262,9 +277,7 @@ void game_run()
 				button_start.x = newpos_start.x;
 				button_start.y = newpos_start.y + 50;
 				sfText_setPosition(game_start_button_text,button_start);
-
 				button_start.y = button_start.y + 50;
-
 				sfText_setPosition(game_author_text,button_start);
 
 				switch(text_yellow)
@@ -276,12 +289,11 @@ void game_run()
 						break;
 					case 1:
 						sfText_setColor(game_start_button_text,sfColor_fromRGB(255,0,0));
-						
+
 						sfText_setColor(game_start_text,sfColor_fromRGB(255,0,0));
 						text_yellow = 0;
 						break;
 				}
-
 				jnx_list *menu_starfield = starfield_menu_create(main_view);
 				jnx_node *head = menu_starfield->head;
 				while(menu_starfield->head)

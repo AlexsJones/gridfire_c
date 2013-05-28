@@ -23,8 +23,8 @@
 #include <jnxc_headers/jnxlog.h>
 #include "audio_control.h"
 #include "../game.h"
+#include "scoreboard.h"
 square *bounds_map = NULL;
-
 jnx_list *object_list;
 void cartographer_add(game_object *obj)
 {
@@ -104,6 +104,12 @@ void cartographer_update()
 			jnx_log("Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
 			//remove the object
 			play_sound(sound_lexplosion);
+
+			/*-----------------------------------------------------------------------------
+			 *  Add our soon to be lost object to the score board
+			 *-----------------------------------------------------------------------------*/
+			printf("adding object for destruction %s with health %d\n",current->object_type,current->health);
+			score_add_destroyed_obj(current);
 			sfSprite_destroy(current->sprite);
 			free(current);
 		}

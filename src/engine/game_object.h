@@ -21,7 +21,7 @@
 #include <SFML/Graphics.h>
 #include <SFML/Window.h>
 #include "../utils/geometry.h"
-typedef enum weapon_type { PLASMA,LASER,DUALLASER } weapon_type;
+typedef enum weapon_type { PLASMA,LASER,DUALLASER,LASER2,TURBO_LASER } weapon_type;
 typedef enum { PLAYER,STATIONARY, MOVING, COMBAT,EVASION,HEALTH_CONTAINER } object_state;
 typedef struct game_object{
 	sfSprite *sprite;
