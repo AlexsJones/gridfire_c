@@ -39,6 +39,7 @@ sfClock *clock;
 /*-----------------------------------------------------------------------------
  *  Game text
  *-----------------------------------------------------------------------------*/
+sfText *next_level_text = NULL;
 sfText *game_over_text = NULL;
 sfText *game_start_text = NULL;
 sfText *game_author_text = NULL;
@@ -48,7 +49,7 @@ int text_yellow = 1;
  *  Player handle for view and camera purposes
  *-----------------------------------------------------------------------------*/
 game_object *player = NULL;
-typedef enum { GAMESTART,RUNNING, GAMEOVER } game_state;
+typedef enum { GAMESTART,RUNNING,NEXT_LEVEL, GAMEOVER } game_state;
 game_state current_game_state;
 int game_setup(jnx_hashmap *configuration)
 {
@@ -85,6 +86,7 @@ int game_setup(jnx_hashmap *configuration)
 	game_over_text = game_ui_text_builder("GAME OVER",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,30);
 	game_start_button_text = game_ui_text_builder("Start",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	game_author_text = game_ui_text_builder("By Alex Jones",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
+	next_level_text = game_ui_text_builder("Congratulations you win",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,45);
 	/*-----------------------------------------------------------------------------
 	 *  Set up ingame ui
 	 *-----------------------------------------------------------------------------*/
@@ -93,7 +95,7 @@ int game_setup(jnx_hashmap *configuration)
 	/*-----------------------------------------------------------------------------
 	 *  Scoreboard setup
 	 *-----------------------------------------------------------------------------*/
-	score_setup();
+	score_setup(atoi(jnx_hash_get(configuration,"MAXSCORE")));
 	/*-----------------------------------------------------------------------------
 	 *  Load weapon textures
 	 *-----------------------------------------------------------------------------*/
@@ -147,6 +149,7 @@ int game_load(char *configuration_path)
 	/*-----------------------------------------------------------------------------
 	 *  Start results
 	 *-----------------------------------------------------------------------------*/
+
 	jnx_log("Done\n");
 	return 0;
 }
@@ -160,6 +163,26 @@ void game_run()
 	{
 		switch(current_game_state)
 		{
+			case NEXT_LEVEL:
+				sfRenderWindow_clear(main_window,clear_color);	
+				sfRenderWindow_pollEvent(main_window,&current_event);
+				switch(current_event.key.code)
+				{
+					case sfKeyEscape:
+						sfRenderWindow_close(main_window);
+						break;
+				}
+
+				sfVector2f nlpos = sfView_getCenter(main_view);
+				int nltext_offset = strlen(sfText_getString(next_level_text));
+				nltext_offset = nltext_offset * sfText_getCharacterSize(next_level_text);
+				sfVector2f nlnewpos;
+				nlnewpos.x	= nlpos.x - (nltext_offset / 2);
+				nlnewpos.y = nlpos.y;
+				sfText_setPosition(next_level_text,nlnewpos);
+				sfRenderWindow_drawText(main_window,next_level_text,NULL);
+				sfRenderWindow_display(main_window);	
+				break;
 			case RUNNING:
 				time = sfClock_getElapsedTime(clock);
 				current_time = sfTime_asSeconds(time);
@@ -171,6 +194,10 @@ void game_run()
 						sfRenderWindow_close(main_window);
 						break;
 				}
+				if(score_max_achieved() == 1)
+				{
+					current_game_state = NEXT_LEVEL;
+				}				
 				sfRenderWindow_clear(main_window,clear_color);	
 				/*-----------------------------------------------------------------------------
 				 *  Set the current view

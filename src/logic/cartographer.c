@@ -109,6 +109,7 @@ void cartographer_update()
 			 *  Add our soon to be lost object to the score board
 			 *-----------------------------------------------------------------------------*/
 			printf("adding object for destruction %s with health %d\n",current->object_type,current->health);
+			//Possible bug here if the player starts in reach of enemy ships and they start blowing up before game time	
 			score_add_destroyed_obj(current);
 			sfSprite_destroy(current->sprite);
 			free(current);
