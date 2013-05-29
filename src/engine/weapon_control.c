@@ -139,7 +139,7 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 			{
 				if(strcmp(obj->object_type,current->parent_type) == 0)
 				{
-
+					// Objects of the same type don't want to be blowing each other up!
 				}else{
 				obj->health -=current->damage;	
 			}	}
