@@ -41,7 +41,10 @@ void audio_control_setup(void)
 	assert(sound_laser2);
 	sound_laser3 = audio_control_build_sound("res/laser03.flac");
 	assert(sound_laser3);
-
+	sound_laser4 = audio_control_build_sound("res/laser04.flac");
+	assert(sound_laser4);
+	sound_phaser = audio_control_build_sound("res/phaser.flac");
+	assert(sound_phaser);
 
 	/*-----------------------------------------------------------------------------
 	 *  Game music

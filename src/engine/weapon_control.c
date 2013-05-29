@@ -71,18 +71,23 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	switch(parent->weapon)
 	{
 		case PLASMA:
+			play_sound(sound_phaser);
 			texture = plasma_texture;
 			break;
 		case LASER:
+			play_sound(sound_laser);
 			texture = laser_texture;
 			break;
 		case DUALLASER:
+			play_sound(sound_laser3);
 			texture = dual_laser_texture;
 			break;
 		case LASER2:
+			play_sound(sound_laser2);
 			texture = laser2_texture;
 			break;
 		case TURBO_LASER:
+			play_sound(sound_laser4);
 			texture = turbolaser_texture;
 			break;
 		default:
@@ -110,18 +115,10 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x;	
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
-
 	/*-----------------------------------------------------------------------------
 	 *  Set the parent type to help us work out if enemies will blow each other up!
 	 *-----------------------------------------------------------------------------*/
 	weapon_shot->parent_type = parent->object_type;
-	if(strcmp(parent->object_type,"player") == 0)
-	{
-		play_sound(sound_laser2);
-	}else
-	{
-		play_sound(sound_laser);
-	}
 }
 void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 {
@@ -140,9 +137,10 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 				if(strcmp(obj->object_type,current->parent_type) == 0)
 				{
 					// Objects of the same type don't want to be blowing each other up!
-				}else{
-				obj->health -=current->damage;	
-			}	}
+				}else
+				{
+					obj->health -=current->damage;	
+				}	}
 		}
 		free(game_object_size);
 		dqueue_head = dqueue_head->next_node;

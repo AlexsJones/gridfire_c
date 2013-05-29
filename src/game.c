@@ -186,7 +186,6 @@ void game_run()
 						sfRenderWindow_close(main_window);
 						break;
 				}
-
 				sfVector2f nlpos = sfView_getCenter(main_view);
 				int nltext_offset = strlen(sfText_getString(next_level_text));
 				nltext_offset = nltext_offset * sfText_getCharacterSize(next_level_text);

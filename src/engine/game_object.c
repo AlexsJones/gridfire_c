@@ -97,7 +97,6 @@ square* game_object_get_bounds(game_object *obj)
 	square *box = malloc(sizeof(square));
 	sfVector2f position = sfSprite_getPosition(obj->sprite);
 	sfVector2u texture_size = sfTexture_getSize(sfSprite_getTexture(obj->sprite));
-	
 	box->left = position.x - texture_size.x ;
 	box->right = position.x + texture_size.x;
 	box->top = position.y - texture_size.y ;
@@ -106,7 +105,6 @@ square* game_object_get_bounds(game_object *obj)
 }
 sfRectangleShape *game_object_get_boundingRect(game_object *obj)
 {
-
 			sfVector2u texture_size = sfTexture_getSize(sfSprite_getTexture(obj->sprite));
 			sfVector2f bounding_size;
 			bounding_size.x = texture_size.x;

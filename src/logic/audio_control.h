@@ -29,7 +29,8 @@ void audio_control_setup(void);
 sfSound *sound_laser;
 sfSound *sound_laser2;
 sfSound *sound_laser3;
-
+sfSound *sound_laser4;
+sfSound *sound_phaser;
 sfSound *sound_lexplosion;
 
 /*-----------------------------------------------------------------------------
