@@ -37,6 +37,7 @@ jnx_list *temp_draw = NULL;
 #endif
 typedef struct weapon_shot
 {
+	char *parent_type;
 	sfSprite *sprite;
 	int damage;
 	int max_velocity;
@@ -110,6 +111,10 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 
+	/*-----------------------------------------------------------------------------
+	 *  Set the parent type to help us work out if enemies will blow each other up!
+	 *-----------------------------------------------------------------------------*/
+	weapon_shot->parent_type = parent->object_type;
 	if(strcmp(parent->object_type,"player") == 0)
 	{
 		play_sound(sound_laser2);
@@ -132,8 +137,12 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 			{
 			}else
 			{
+				if(strcmp(obj->object_type,current->parent_type) == 0)
+				{
+
+				}else{
 				obj->health -=current->damage;	
-			}	
+			}	}
 		}
 		free(game_object_size);
 		dqueue_head = dqueue_head->next_node;
