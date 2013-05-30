@@ -71,7 +71,7 @@ do
 			esac
 			;;
 		health)
-			num_health=$(($ENEMY_NUMBER/8))
+			num_health=$(($ENEMY_NUMBER/5))
 			echo $num_health
 			for ((n = 0; n<$num_health;n++))
 			do

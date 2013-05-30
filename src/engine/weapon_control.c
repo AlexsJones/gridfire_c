@@ -120,7 +120,7 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	 *-----------------------------------------------------------------------------*/
 	weapon_shot->parent_type = parent->object_type;
 }
-void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
+int weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 {
 	jnx_node *dqueue_head = (*draw_queue)->head;
 	sfVector2f current_weapon_pos = sfSprite_getPosition(current->sprite);
@@ -140,11 +140,15 @@ void weapon_check_collision(weapon_shot *current, jnx_list **draw_queue)
 				}else
 				{
 					obj->health -=current->damage;	
-				}	}
+					free(game_object_size);
+					return 1;
+				}	
+			}
 		}
 		free(game_object_size);
 		dqueue_head = dqueue_head->next_node;
 	}
+	return 0;
 }
 int weapon_check_bounds(weapon_shot *current, jnx_list **temp_list,square *view_bounds)
 {
@@ -184,15 +188,18 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 		sfSprite_move(current->sprite,move_offset);
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot collides with anything drawn
+		 *  If our shot is hitting our target we'll turn off rendering to add to the effect
 		 *-----------------------------------------------------------------------------*/
-		weapon_check_collision(current,draw_queue);
+		if(!weapon_check_collision(current,draw_queue))
+		{
 		/*-----------------------------------------------------------------------------
 		 *  Check to see whether the current shot goes out of map bounds
 		 *-----------------------------------------------------------------------------*/
-		if(weapon_check_bounds(current,&temp,view_bounds) == 0)
-		{
-			sfRenderWindow_drawSprite(window,current->sprite,NULL);
-		}	
+			if(weapon_check_bounds(current,&temp,view_bounds) == 0)
+			{
+				sfRenderWindow_drawSprite(window,current->sprite,NULL);
+			}	
+		}
 		head = head->next_node;
 	}
 	free(view_bounds);
