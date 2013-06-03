@@ -111,8 +111,8 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 	weapon_shot->max_velocity = parent->maxspeed;
 	sfVector2f move_offset;
 	sfVector2u size = sfTexture_getSize(sfSprite_getTexture(parent->sprite));
-	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x;
-	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x;	
+	move_offset.x = cos(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x /2 ;
+	move_offset.y = sin(sfSprite_getRotation(weapon_shot->sprite) * 3.14159265 / 180) * size.x /2 ;	
 	sfSprite_move(weapon_shot->sprite,move_offset);
 	jnx_list_add(weapon_shot_list,weapon_shot);	
 	/*-----------------------------------------------------------------------------
@@ -192,9 +192,9 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 		 *-----------------------------------------------------------------------------*/
 		if(!weapon_check_collision(current,draw_queue))
 		{
-		/*-----------------------------------------------------------------------------
-		 *  Check to see whether the current shot goes out of map bounds
-		 *-----------------------------------------------------------------------------*/
+			/*-----------------------------------------------------------------------------
+			 *  Check to see whether the current shot goes out of map bounds
+			 *-----------------------------------------------------------------------------*/
 			if(weapon_check_bounds(current,&temp,view_bounds) == 0)
 			{
 				sfRenderWindow_drawSprite(window,current->sprite,NULL);
