@@ -23,8 +23,8 @@
 #include <jnxc_headers/jnxfile.h>
 #include <jnxc_headers/jnxhash.h>
 #define GAMESETTINGS "conf/settings.conf"
-#define GAMECONFIGURATION "conf/game.conf"
 #define GAMELOG "log/game.log"
+#include <X11/Xlib.h>
 jnx_hashmap *create_configuration()
 {
 	jnx_file_kvp_node *node = jnx_file_read_keyvaluepairs(GAMESETTINGS,"=");
@@ -41,12 +41,17 @@ jnx_hashmap *create_configuration()
 }
 int main(int argc, char **argv)
 {
+	
+	/*-----------------------------------------------------------------------------
+	 *  Very important to note that XInitThreads is a linux implementation only
+	 *-----------------------------------------------------------------------------*/
+	XInitThreads();
 	jnx_log_setup(GAMELOG);
 	jnx_log("Starting game setup\n");	
 
 	jnx_hashmap *config = create_configuration();
 	
-	if(game_setup(config) == 0 && game_load(GAMECONFIGURATION) == 0)
+	if(game_setup(config) == 0)
 	{
 		game_run();
 	}

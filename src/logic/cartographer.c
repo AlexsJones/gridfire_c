@@ -26,6 +26,20 @@
 #include "scoreboard.h"
 square *bounds_map = NULL;
 jnx_list *object_list;
+void cartographer_clear(void)
+{
+	if(object_list == NULL) return;
+	jnx_node *head = object_list->head;
+	while(head)
+	{
+		game_object *currentobj = head->_data;
+		free(currentobj->sprite);
+		free(currentobj);
+		head = head->next_node;
+	}
+	jnx_list_delete(object_list);
+	object_list = NULL;
+}
 void cartographer_add(game_object *obj)
 {
 	if(object_list == NULL) { object_list = jnx_list_init(); }
@@ -39,6 +53,10 @@ jnx_list *cartographer_get_at(sfView *view)
 	/*-----------------------------------------------------------------------------
 	 *  Again a temporary solution to return the entire list
 	 *-----------------------------------------------------------------------------*/
+	if(object_list == NULL)
+	{
+		return NULL;
+	}
 	sfVector2f position = sfView_getCenter(view);
 	int view_max_size = sfView_getSize(view).x;
 	jnx_node *head = object_list->head;

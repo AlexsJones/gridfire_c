@@ -31,25 +31,31 @@
 #include "logic/audio_control.h"
 #include "logic/scoreboard.h"
 #include <SFML/Audio.h>
+#define GAMECONFIGURATION "conf/game.conf"
+#include <pthread.h>
 sfVideoMode videomode;
 sfRenderWindow *main_window;
 sfView *main_view;
 sfColor clear_color;
-sfClock *clock;
+sfClock *_clock;
+int loading_flag = 0;
+int loading_started = 0;
 /*-----------------------------------------------------------------------------
  *  Game text
  *-----------------------------------------------------------------------------*/
 sfText *next_level_text = NULL;
+sfText *next_level_button_text = NULL;
 sfText *game_over_text = NULL;
 sfText *game_start_text = NULL;
 sfText *game_author_text = NULL;
 sfText *game_start_button_text = NULL;
+sfText *game_loading_text = NULL;
 int text_yellow = 1;
 /*-----------------------------------------------------------------------------
  *  Player handle for view and camera purposes
  *-----------------------------------------------------------------------------*/
 game_object *player = NULL;
-typedef enum { GAMESTART,RUNNING,NEXT_LEVEL, GAMEOVER } game_state;
+typedef enum { GAMESTART,RUNNING,NEXT_LEVEL, GAMEOVER,LOADING } game_state;
 game_state current_game_state;
 
 /*-----------------------------------------------------------------------------
@@ -63,7 +69,6 @@ int game_setup(jnx_hashmap *configuration)
 	assert(configuration);
 	config = configuration;
 	assert(config);
-
 	videomode = sfVideoMode_getDesktopMode();
 	jnx_log("Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
@@ -77,8 +82,8 @@ int game_setup(jnx_hashmap *configuration)
 	sfView_setSize(main_view,view_size);
 
 	clear_color = sfColor_fromRGB(0,0,0);
-	jnx_log("Creating game clock\n");
-	clock = sfClock_create();
+	jnx_log("Creating game _clock\n");
+	_clock = sfClock_create();
 	jnx_log("Creating bounding map\n");
 	int game_bound = atoi(jnx_hash_get(configuration,"GAMEBOUNDS"));
 	cartographer_setbounds(0,game_bound,0,game_bound);
@@ -94,6 +99,10 @@ int game_setup(jnx_hashmap *configuration)
 	game_start_button_text = game_ui_text_builder("Start",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	game_author_text = game_ui_text_builder("By Alex Jones",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	next_level_text = game_ui_text_builder("Congratulations",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,45);
+	next_level_button_text = game_ui_text_builder("Press enter for the next level",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,20);
+	game_loading_text = game_ui_text_builder("LOADING",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,40);
+	assert(game_loading_text);
+	assert(next_level_button_text);
 	assert(game_start_text);
 	assert(game_over_text);
 	assert(game_start_button_text);
@@ -130,8 +139,10 @@ int game_setup(jnx_hashmap *configuration)
 	current_game_state = GAMESTART;
 	return 0;
 }
-int game_load(char *configuration_path)
+void *game_load(void *args)
 {
+	char *configuration_path = GAMECONFIGURATION;
+	loading_flag = 0;
 	jnx_log("Starting game_load\n");	
 	/*-----------------------------------------------------------------------------
 	 *  Perform object loading
@@ -157,15 +168,27 @@ int game_load(char *configuration_path)
 	if(player == NULL)
 	{
 		jnx_log("Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
-		return 1;
+		exit(0);
 	}
-
 	/*-----------------------------------------------------------------------------
 	 *  Start results
 	 *-----------------------------------------------------------------------------*/
 
 	jnx_log("Done\n");
-	return 0;
+	loading_flag = 1;
+}
+void game_setup_next_level()
+{
+	if(current_level < max_levels)
+	{
+		current_level++;
+	}
+	/*-----------------------------------------------------------------------------
+	 *  Purge existing game objects
+	 *-----------------------------------------------------------------------------*/
+	cartographer_clear();
+	player = NULL;
+	current_game_state = LOADING;
 }
 void game_run()
 {
@@ -185,6 +208,9 @@ void game_run()
 					case sfKeyEscape:
 						sfRenderWindow_close(main_window);
 						break;
+					case sfKeyReturn:
+						game_setup_next_level();
+						break;
 				}
 				sfVector2f nlpos = sfView_getCenter(main_view);
 				int nltext_offset = strlen(sfText_getString(next_level_text));
@@ -193,11 +219,30 @@ void game_run()
 				nlnewpos.x	= nlpos.x - (nltext_offset / 2);
 				nlnewpos.y = nlpos.y;
 				sfText_setPosition(next_level_text,nlnewpos);
+
+				int nlbt_offset = strlen(sfText_getString(next_level_button_text));
+				nlbt_offset = nlbt_offset * sfText_getCharacterSize(next_level_button_text);
+				nlnewpos.x = nlpos.x - (nlbt_offset /2);
+				nlnewpos.y = nlnewpos.y + 50;
+				sfText_setPosition(next_level_button_text,nlnewpos);
 				sfRenderWindow_drawText(main_window,next_level_text,NULL);
+				switch(text_yellow)
+				{
+					case 0:
+						sfText_setColor(next_level_button_text,sfColor_fromRGB(255,255,0));
+						text_yellow = 1;
+						break;
+					case 1:
+						sfText_setColor(next_level_button_text,sfColor_fromRGB(255,0,0));
+						text_yellow = 0;
+						break;
+				}
+				sfRenderWindow_drawText(main_window,next_level_button_text,NULL);
 				sfRenderWindow_display(main_window);	
 				break;
 			case RUNNING:
-				time = sfClock_getElapsedTime(clock);
+		
+				time = sfClock_getElapsedTime(_clock);
 				current_time = sfTime_asSeconds(time);
 
 				sfRenderWindow_pollEvent(main_window,&current_event);
@@ -210,6 +255,7 @@ void game_run()
 				if(score_max_achieved() == 1)
 				{
 					current_game_state = NEXT_LEVEL;
+					score_reset();
 				}				
 				sfRenderWindow_clear(main_window,clear_color);	
 				/*-----------------------------------------------------------------------------
@@ -219,49 +265,55 @@ void game_run()
 				/*-----------------------------------------------------------------------------
 				 *  Draw starfield
 				 *-----------------------------------------------------------------------------*/
-				starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
+				if(player != NULL){
+					starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
+				}
 				/*-----------------------------------------------------------------------------
 				 *  Draw objects
 				 *-----------------------------------------------------------------------------*/
 				jnx_list *draw_queue = cartographer_get_at(main_view);
-				jnx_node *current_draw_pos = draw_queue->head; 
-				/*-----------------------------------------------------------------------------
-				 *  Draw weapon fire
-				 *-----------------------------------------------------------------------------*/
-				weapon_draw(main_window,main_view,&draw_queue);
-				/*-----------------------------------------------------------------------------
-				 *  Draw ingame ui
-				 *-----------------------------------------------------------------------------*/
-				game_ui_update(main_window,main_view,player);
-				game_ui_draw(main_window);
-				while(current_draw_pos)
-				{
-					game_object *obj = (game_object*)current_draw_pos->_data;
-					if(strcmp(obj->object_type,"player") == 0)
+				if(draw_queue != NULL){
+					/*-----------------------------------------------------------------------------
+					 *  Draw ingame ui
+					 *-----------------------------------------------------------------------------*/
+					game_ui_update(main_window,main_view,player);
+					game_ui_draw(main_window);
+					jnx_node *current_draw_pos = draw_queue->head; 
+					/*-----------------------------------------------------------------------------
+					 *  Draw weapon fire
+					 *-----------------------------------------------------------------------------*/
+					weapon_draw(main_window,main_view,&draw_queue);
+					while(current_draw_pos)
 					{
-						game_object_update(obj,current_event,main_view);				
-						sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
-					}
-					else
-					{
-						/*-----------------------------------------------------------------------------
-						 *  Update AI objects
-						 *-----------------------------------------------------------------------------*/
-						game_ai_update(obj,player);	
-					}
+						game_object *obj = (game_object*)current_draw_pos->_data;
+						if(strcmp(obj->object_type,"player") == 0)
+						{
+							game_object_update(obj,current_event,main_view);				
+							sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
+						}
+						else
+						{
+							/*-----------------------------------------------------------------------------
+							 *  Update AI objects
+							 *-----------------------------------------------------------------------------*/
+							game_ai_update(obj,player);	
+						}
 #ifdef BOUNDING_BOX
-					sfRectangleShape *bounding = game_object_get_boundingRect(obj);
-					sfRenderWindow_drawRectangleShape(main_window,bounding,NULL);
-					sfRectangleShape_destroy(bounding);
+						sfRectangleShape *bounding = game_object_get_boundingRect(obj);
+						sfRenderWindow_drawRectangleShape(main_window,bounding,NULL);
+						sfRectangleShape_destroy(bounding);
 #endif
-					sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
-					current_draw_pos = current_draw_pos->next_node;
+						sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
+						current_draw_pos = current_draw_pos->next_node;
+					}
+				
+				
+					cartographer_update();
 				}
 				/*-----------------------------------------------------------------------------
 				 *  Display window
 				 *-----------------------------------------------------------------------------*/
 				sfRenderWindow_display(main_window);
-				cartographer_update();
 				jnx_list_delete(draw_queue);
 				break;
 
@@ -290,7 +342,6 @@ void game_run()
 				sfRenderWindow_clear(main_window,clear_color);	
 				sfRenderWindow_pollEvent(main_window,&current_event);
 				int game_bound = atoi(jnx_hash_get(config,"GAMEBOUNDS"));
-				sfVector2f viewpos;
 				switch(current_event.key.code)
 				{
 					case sfKeyEscape:
@@ -298,11 +349,8 @@ void game_run()
 						break;
 					case sfKeySpace:
 
-						viewpos.x = game_bound /2;
-						viewpos.y = game_bound /2;
-						sfView_setCenter(main_view,viewpos);
 						play_music(INGAMEMUSIC);
-						current_game_state = RUNNING;
+						current_game_state = LOADING;
 						break;
 				}
 				sfVector2f pos_start = sfView_getCenter(main_view);
@@ -354,6 +402,48 @@ void game_run()
 				sfRenderWindow_drawText(main_window,game_start_text,NULL);
 				sfRenderWindow_drawText(main_window,game_author_text,NULL);
 				sfRenderWindow_display(main_window);	
+				break;
+			case LOADING:
+				sfRenderWindow_clear(main_window,clear_color);
+				if(loading_started == 0)
+				{
+					//spawn thread
+					pthread_t load_worker;
+					pthread_create(&load_worker,NULL,game_load,NULL);
+					loading_started = 1;
+				}
+				if(loading_flag == 1)
+				{
+					//break and start game
+					loading_started = 0;
+					loading_flag = 0;
+					sfVector2f viewpos;
+					viewpos.x = game_bound /2;
+					viewpos.y = game_bound /2;
+					sfView_setCenter(main_view,viewpos);
+					current_game_state = RUNNING;
+					printf("Loading done\n");	
+					break;
+				}
+				sfVector2f loadingpos = sfView_getCenter(main_view); 
+				int loading_offset = strlen(sfText_getString(game_loading_text));
+				loading_offset = loading_offset * sfText_getCharacterSize(game_loading_text);
+				loadingpos.x = loadingpos.x - (loading_offset /2);
+				loadingpos.y = loadingpos.y - (loading_offset /2);
+				switch(text_yellow)
+				{
+					case 0:
+						sfText_setColor(game_loading_text,sfColor_fromRGB(255,255,0));
+						text_yellow = 1;
+						break;
+					case 1:
+						sfText_setColor(game_loading_text,sfColor_fromRGB(255,0,0));
+						text_yellow = 0;
+						break;
+				}
+				sfText_setPosition(game_loading_text,loadingpos);
+				sfRenderWindow_drawText(main_window,game_loading_text,NULL);
+				sfRenderWindow_display(main_window);
 				break;
 		}
 

@@ -21,7 +21,7 @@
 #include <SFML/Window.h>
 #include <jnxc_headers/jnxhash.h>
 int game_setup(jnx_hashmap *configptr);
-int game_load(char *configuration_path);
+void *game_load(void *args);
 void game_run(void);
 void game_end(void);
 
