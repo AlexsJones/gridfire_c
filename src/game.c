@@ -405,6 +405,7 @@ void game_run()
 				break;
 			case LOADING:
 				sfRenderWindow_clear(main_window,clear_color);
+				sfRenderWindow_setView(main_window,main_view);
 				if(loading_started == 0)
 				{
 					//spawn thread
@@ -426,6 +427,7 @@ void game_run()
 					break;
 				}
 				sfVector2f loadingpos = sfView_getCenter(main_view); 
+				printf("%g %g\n",loadingpos.x,loadingpos.y);
 				int loading_offset = strlen(sfText_getString(game_loading_text));
 				loading_offset = loading_offset * sfText_getCharacterSize(game_loading_text);
 				loadingpos.x = loadingpos.x - (loading_offset /2);
