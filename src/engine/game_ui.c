@@ -24,8 +24,9 @@
 #define FONTPATH "res/8bit.ttf"
 sfText *player_health_text = NULL;
 sfText *current_kill_count = NULL;
+sfText *current_level_count = NULL;
 sfFont *game_ui_font = NULL;
-
+extern int current_level;
 sfText *game_ui_text_builder(char *string, sfVector2f position, sfColor color,sfTextStyle style,float size)
 {
 	sfText *temp = sfText_create();
@@ -55,9 +56,23 @@ int game_ui_setup(sfRenderWindow *main_window, sfView *main_view)
 	newpos.y = pos.y - (view_size.y /2);
 	char stringbuf[1024];
 	sprintf(stringbuf,"Health - %d",0);
+
+	/*-----------------------------------------------------------------------------
+	 *  Player health text
+	 *-----------------------------------------------------------------------------*/
 	player_health_text = game_ui_text_builder(stringbuf, newpos, sfColor_fromRGB(255,255,0), sfTextRegular, 25);
 	newpos.y = pos.y + (view_size.y /2) - 40;
+
+	/*-----------------------------------------------------------------------------
+	 *  Player kill count
+	 *-----------------------------------------------------------------------------*/
 	current_kill_count = game_ui_text_builder("", newpos,sfColor_fromRGB(255,0,0),sfTextRegular, 15);
+
+	/*-----------------------------------------------------------------------------
+	 *  Current level ui
+	 *-----------------------------------------------------------------------------*/
+	newpos.y = newpos.y + 20;
+	current_level_count = game_ui_text_builder("",newpos,sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	jnx_log("Created game ui\n");
 
 	return 0;
@@ -82,9 +97,18 @@ void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *play
 	if(health <= 0) { health = 0; }
 	sprintf(stringbuf,"Health %d",health);
 	sfText_setString(player_health_text,stringbuf);
+	/*-----------------------------------------------------------------------------
+	 *  Update current_level_ui
+	 *-----------------------------------------------------------------------------*/
+	char levelbuf[1024];
+	sprintf(levelbuf,"Current level %d",current_level);
+	sfText_setString(current_level_count,levelbuf);
+	newpos.y = newpos.y + 20;
+	sfText_setPosition(current_level_count,newpos);
 }
 void game_ui_draw(sfRenderWindow *main_window)
 {
 	sfRenderWindow_drawText(main_window,player_health_text,NULL);
 	sfRenderWindow_drawText(main_window,current_kill_count,NULL);
+	sfRenderWindow_drawText(main_window,current_level_count,NULL);
 }
