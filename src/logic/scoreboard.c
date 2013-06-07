@@ -19,9 +19,10 @@
 #include "scoreboard.h"
 int score_count;
 int score_max;
+extern int current_level;
 int score_max_achieved(void)
 {
-	if(score_count >= score_max)
+	if(score_count >= (score_max * current_level))
 		{
 			return 1;
 		}else

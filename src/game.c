@@ -50,14 +50,14 @@ sfText *game_start_text = NULL;
 sfText *game_author_text = NULL;
 sfText *game_start_button_text = NULL;
 sfText *game_loading_text = NULL;
+sfText *game_finish_text = NULL;
 int text_yellow = 1;
 /*-----------------------------------------------------------------------------
  *  Player handle for view and camera purposes
  *-----------------------------------------------------------------------------*/
 game_object *player = NULL;
-typedef enum { GAMESTART,RUNNING,NEXT_LEVEL, GAMEOVER,LOADING } game_state;
+typedef enum { GAMESTART,RUNNING,NEXT_LEVEL, GAMEOVER,LOADING,COMPLETE } game_state;
 game_state current_game_state;
-
 /*-----------------------------------------------------------------------------
  *  Keeping track of current level and game position
  *-----------------------------------------------------------------------------*/
@@ -90,7 +90,6 @@ int game_setup(jnx_hashmap *configuration)
 	int star_density = atoi(jnx_hash_get(configuration,"STARCOUNT"));
 	starfield_create(cartographer_getbounds(),star_density);
 	jnx_log("Initial setup complete\n");	
-
 	/*-----------------------------------------------------------------------------
 	 *  Game text
 	 *-----------------------------------------------------------------------------*/
@@ -101,6 +100,8 @@ int game_setup(jnx_hashmap *configuration)
 	next_level_text = game_ui_text_builder("Congratulations",sfView_getCenter(main_view),sfColor_fromRGB(255,255,255),sfTextRegular,45);
 	next_level_button_text = game_ui_text_builder("Press enter for the next level",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,20);
 	game_loading_text = game_ui_text_builder("LOADING",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,40);
+	game_finish_text = game_ui_text_builder("GAME COMPLETE",sfView_getCenter(main_view),sfColor_fromRGB(255,0,0),sfTextRegular,40);
+	assert(game_finish_text);
 	assert(game_loading_text);
 	assert(next_level_button_text);
 	assert(game_start_text);
@@ -200,6 +201,23 @@ void game_run()
 	{
 		switch(current_game_state)
 		{
+			case COMPLETE:
+				sfRenderWindow_clear(main_window,clear_color);	
+				sfRenderWindow_pollEvent(main_window,&current_event);
+				switch(current_event.key.code)
+				{
+					case sfKeyReturn:
+						sfRenderWindow_close(main_window);
+				}
+				sfVector2f completepos = sfView_getCenter(main_view);
+				int string_length = strlen(sfText_getString(game_finish_text));
+				int complete_offset = sfText_getCharacterSize(game_finish_text) * string_length;
+				completepos.x = completepos.x - (complete_offset / 2);
+				sfText_setPosition(game_finish_text,completepos);
+				
+				sfRenderWindow_drawText(main_window,game_finish_text,NULL);
+				sfRenderWindow_display(main_window);	
+				break;
 			case NEXT_LEVEL:
 				sfRenderWindow_clear(main_window,clear_color);	
 				sfRenderWindow_pollEvent(main_window,&current_event);
@@ -219,13 +237,11 @@ void game_run()
 				nlnewpos.x	= nlpos.x - (nltext_offset / 2);
 				nlnewpos.y = nlpos.y;
 				sfText_setPosition(next_level_text,nlnewpos);
-
 				int nlbt_offset = strlen(sfText_getString(next_level_button_text));
 				nlbt_offset = nlbt_offset * sfText_getCharacterSize(next_level_button_text);
 				nlnewpos.x = nlpos.x - (nlbt_offset /2);
 				nlnewpos.y = nlnewpos.y + 50;
 				sfText_setPosition(next_level_button_text,nlnewpos);
-				sfRenderWindow_drawText(main_window,next_level_text,NULL);
 				switch(text_yellow)
 				{
 					case 0:
@@ -237,14 +253,13 @@ void game_run()
 						text_yellow = 0;
 						break;
 				}
+				sfRenderWindow_drawText(main_window,next_level_text,NULL);
 				sfRenderWindow_drawText(main_window,next_level_button_text,NULL);
 				sfRenderWindow_display(main_window);	
 				break;
 			case RUNNING:
-		
 				time = sfClock_getElapsedTime(_clock);
 				current_time = sfTime_asSeconds(time);
-
 				sfRenderWindow_pollEvent(main_window,&current_event);
 				switch(current_event.key.code)
 				{
@@ -254,7 +269,13 @@ void game_run()
 				}
 				if(score_max_achieved() == 1)
 				{
-					current_game_state = NEXT_LEVEL;
+					if(current_level < max_levels)
+					{
+						current_game_state = NEXT_LEVEL;
+					}else if(current_level == max_levels)
+					{
+						current_game_state = COMPLETE;
+					}
 					score_reset();
 				}				
 				sfRenderWindow_clear(main_window,clear_color);	
@@ -306,8 +327,6 @@ void game_run()
 						sfRenderWindow_drawSprite(main_window,obj->sprite,NULL);
 						current_draw_pos = current_draw_pos->next_node;
 					}
-				
-				
 					cartographer_update();
 				}
 				/*-----------------------------------------------------------------------------
@@ -316,7 +335,6 @@ void game_run()
 				sfRenderWindow_display(main_window);
 				jnx_list_delete(draw_queue);
 				break;
-
 			case GAMEOVER:
 				sfRenderWindow_clear(main_window,clear_color);	
 				sfRenderWindow_pollEvent(main_window,&current_event);
@@ -326,7 +344,6 @@ void game_run()
 						sfRenderWindow_close(main_window);
 						break;
 				}
-
 				sfVector2f pos = sfView_getCenter(main_view);
 				int text_offset = strlen(sfText_getString(game_over_text));
 				text_offset = text_offset * sfText_getCharacterSize(game_over_text);
@@ -337,7 +354,6 @@ void game_run()
 				sfRenderWindow_drawText(main_window,game_over_text,NULL);
 				sfRenderWindow_display(main_window);	
 				break;
-
 			case GAMESTART:
 				sfRenderWindow_clear(main_window,clear_color);	
 				sfRenderWindow_pollEvent(main_window,&current_event);
@@ -367,7 +383,6 @@ void game_run()
 				sfText_setPosition(game_start_button_text,button_start);
 				button_start.y = button_start.y + 50;
 				sfText_setPosition(game_author_text,button_start);
-
 				switch(text_yellow)
 				{
 					case 0:
@@ -377,7 +392,6 @@ void game_run()
 						break;
 					case 1:
 						sfText_setColor(game_start_button_text,sfColor_fromRGB(255,0,0));
-
 						sfText_setColor(game_start_text,sfColor_fromRGB(255,0,0));
 						text_yellow = 0;
 						break;
