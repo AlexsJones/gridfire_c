@@ -45,7 +45,7 @@ sfText *game_ui_text_builder(char *string, sfVector2f position, sfColor color,sf
 }
 int game_ui_setup(sfRenderWindow *main_window, sfView *main_view)
 {
-	
+
 	/*-----------------------------------------------------------------------------
 	 *  Player health text in top left
 	 *-----------------------------------------------------------------------------*/
@@ -74,6 +74,12 @@ int game_ui_setup(sfRenderWindow *main_window, sfView *main_view)
 	newpos.y = newpos.y + 20;
 	current_level_count = game_ui_text_builder("",newpos,sfColor_fromRGB(255,0,0),sfTextRegular,15);
 	jnx_log("Created game ui\n");
+
+
+	/*-----------------------------------------------------------------------------
+	 *  Setup the radar
+	 *-----------------------------------------------------------------------------*/
+	radar_setup();
 
 	return 0;
 }
@@ -105,10 +111,18 @@ void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *play
 	sfText_setString(current_level_count,levelbuf);
 	newpos.y = newpos.y + 20;
 	sfText_setPosition(current_level_count,newpos);
+
+
+	/*-----------------------------------------------------------------------------
+	 *  Update radar
+	 *-----------------------------------------------------------------------------*/
+	radar_update(view,main_window,NULL);
 }
 void game_ui_draw(sfRenderWindow *main_window)
 {
 	sfRenderWindow_drawText(main_window,player_health_text,NULL);
 	sfRenderWindow_drawText(main_window,current_kill_count,NULL);
 	sfRenderWindow_drawText(main_window,current_level_count,NULL);
+	radar_draw(main_window);
 }
+

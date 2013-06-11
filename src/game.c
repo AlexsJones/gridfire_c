@@ -214,7 +214,7 @@ void game_run()
 				int complete_offset = sfText_getCharacterSize(game_finish_text) * string_length;
 				completepos.x = completepos.x - (complete_offset / 2);
 				sfText_setPosition(game_finish_text,completepos);
-				
+
 				sfRenderWindow_drawText(main_window,game_finish_text,NULL);
 				sfRenderWindow_display(main_window);	
 				break;
@@ -282,7 +282,11 @@ void game_run()
 				/*-----------------------------------------------------------------------------
 				 *  Set the current view
 				 *-----------------------------------------------------------------------------*/
-				sfRenderWindow_setView(main_window,main_view);
+				if(player != NULL){
+
+					sfView_setCenter(main_view,sfSprite_getPosition(player->sprite));
+					sfRenderWindow_setView(main_window,main_view);
+				}
 				/*-----------------------------------------------------------------------------
 				 *  Draw starfield
 				 *-----------------------------------------------------------------------------*/
@@ -294,11 +298,8 @@ void game_run()
 				 *-----------------------------------------------------------------------------*/
 				jnx_list *draw_queue = cartographer_get_at(main_view);
 				if(draw_queue != NULL){
-					/*-----------------------------------------------------------------------------
-					 *  Draw ingame ui
-					 *-----------------------------------------------------------------------------*/
-					game_ui_update(main_window,main_view,player);
-					game_ui_draw(main_window);
+
+
 					jnx_node *current_draw_pos = draw_queue->head; 
 					/*-----------------------------------------------------------------------------
 					 *  Draw weapon fire
@@ -310,7 +311,6 @@ void game_run()
 						if(strcmp(obj->object_type,"player") == 0)
 						{
 							game_object_update(obj,current_event,main_view);				
-							sfView_setCenter(main_view,sfSprite_getPosition(obj->sprite));
 						}
 						else
 						{
@@ -330,8 +330,10 @@ void game_run()
 					cartographer_update();
 				}
 				/*-----------------------------------------------------------------------------
-				 *  Display window
+				 *  Draw ingame ui
 				 *-----------------------------------------------------------------------------*/
+				game_ui_update(main_window,main_view,player);
+				game_ui_draw(main_window);
 				sfRenderWindow_display(main_window);
 				jnx_list_delete(draw_queue);
 				break;
