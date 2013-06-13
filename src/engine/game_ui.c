@@ -83,7 +83,7 @@ int game_ui_setup(sfRenderWindow *main_window, sfView *main_view)
 
 	return 0;
 }
-void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *player)
+void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *player,jnx_list *draw_queue)
 {
 	sfVector2f pos = sfView_getCenter(view);
 	sfVector2f view_size = sfView_getSize(view);
@@ -116,13 +116,13 @@ void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *play
 	/*-----------------------------------------------------------------------------
 	 *  Update radar
 	 *-----------------------------------------------------------------------------*/
-	radar_update(view,main_window,NULL);
+	radar_update(view,main_window);
 }
-void game_ui_draw(sfRenderWindow *main_window)
+void game_ui_draw(sfRenderWindow *main_window,jnx_list *draw_queue)
 {
 	sfRenderWindow_drawText(main_window,player_health_text,NULL);
 	sfRenderWindow_drawText(main_window,current_kill_count,NULL);
 	sfRenderWindow_drawText(main_window,current_level_count,NULL);
-	radar_draw(main_window);
+	radar_draw(main_window,draw_queue);
 }
 

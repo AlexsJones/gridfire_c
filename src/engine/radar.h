@@ -20,6 +20,6 @@
 #include <SFML/Graphics.h>
 #include <jnxc_headers/jnxlist.h>
 void radar_setup(void);
-void radar_update(sfView *view,sfRenderWindow *main_window, jnx_list *list);
-void radar_draw(sfRenderWindow *main_view);
+void radar_update(sfView *view,sfRenderWindow *main_window);
+void radar_draw(sfRenderWindow *main_window,jnx_list *draw_queue);
 #endif

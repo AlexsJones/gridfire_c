@@ -332,8 +332,8 @@ void game_run()
 				/*-----------------------------------------------------------------------------
 				 *  Draw ingame ui
 				 *-----------------------------------------------------------------------------*/
-				game_ui_update(main_window,main_view,player);
-				game_ui_draw(main_window);
+				game_ui_update(main_window,main_view,player,draw_queue);
+				game_ui_draw(main_window,draw_queue);
 				sfRenderWindow_display(main_window);
 				jnx_list_delete(draw_queue);
 				break;
