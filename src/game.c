@@ -292,7 +292,7 @@ void game_run()
 				 *  Draw starfield
 				 *-----------------------------------------------------------------------------*/
 				if(player != NULL){
-					starfield_draw(main_window,sfSprite_getPosition(player->sprite));	
+					starfield_draw(main_view,main_window,sfSprite_getPosition(player->sprite));	
 				}
 				/*-----------------------------------------------------------------------------
 				 *  Draw objects

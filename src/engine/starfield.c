@@ -94,11 +94,11 @@ void starfield_create(square *bounds,int density)
 		jnx_list_add(star_field_list,star);
 	}
 }
-void starfield_draw(sfRenderWindow *window,sfVector2f player_position)
+void starfield_draw(sfView *view,sfRenderWindow *window,sfVector2f player_position)
 {
 	jnx_node *head = star_field_list->head;
 
-	sfVector2f vsize = sfView_getSize(sfRenderWindow_getDefaultView(window));
+	sfVector2f vsize = sfView_getSize(view);
 	while(head)
 	{
 		sfSprite *current = (sfSprite*)head->_data;
