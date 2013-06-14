@@ -19,8 +19,9 @@ do
 	case "$object_type" in
 
 		player)
-				POSX=$(($MAPSIZE/2))
-				POSY=$(($MAPSIZE/2))
+			POSX=$(($MAPSIZE/2))
+			POSY=$(($MAPSIZE/2))
+				echo "Player position is $POSX $POSY"
 				player=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $player >> $CONF_PATH	
 			;;
@@ -32,8 +33,8 @@ do
 			echo "Fuelling cruisers..."
 			for ((n = 0; n<$ENEMY_NUMBER;n++))
 			do
-				POSX=$(($RANDOM%$MAPSIZE))
-				POSY=$(($RANDOM%$MAPSIZE))
+				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -42,8 +43,8 @@ do
 			echo "Buliding tankers..."
 			for ((n = 0; n<$ENEMY_NUMBER;n++))
 			do
-				POSX=$(($RANDOM%$MAPSIZE))
-				POSY=$(($RANDOM%$MAPSIZE))
+				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -52,8 +53,8 @@ do
 			echo "Arming battlecruisers..."
 			for ((n = 0; n<$ENEMY_NUMBER /2;n++))
 			do
-				POSX=$(($RANDOM%$MAPSIZE))
-				POSY=$(($RANDOM%$MAPSIZE))
+				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -62,8 +63,8 @@ do
 			echo "Polishing battleships..."
 			for ((n = 0; n<$ENEMY_NUMBER /4;n++))
 			do
-				POSX=$(($RANDOM%$MAPSIZE))
-				POSY=$(($RANDOM%$MAPSIZE))
+				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -75,8 +76,8 @@ do
 			echo $num_health
 			for ((n = 0; n<$num_health;n++))
 			do
-				POSX=$(($RANDOM%$MAPSIZE))
-				POSY=$(($RANDOM%$MAPSIZE))
+				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
 				health_cargo=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $health_cargo >> $CONF_PATH
 			done

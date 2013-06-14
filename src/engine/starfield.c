@@ -25,6 +25,8 @@
 
 jnx_list *star_field_list = NULL;
 jnx_list *menu_starfield = NULL;
+sfTexture *texture = NULL;
+
 jnx_list *starfield_menu_create(sfView *view)
 {
 	
@@ -34,8 +36,10 @@ jnx_list *starfield_menu_create(sfView *view)
 	sfVector2f vsize = sfView_getSize(view);
 	srand(time(NULL));
 	int count;
-	sfTexture *texture = sfTexture_createFromFile("res/star.png",NULL);
-
+	if(texture == NULL){
+	texture = sfTexture_createFromFile("res/star.png",NULL);
+	}
+	srand(666);
 	for(count = 0; count < density; ++count)
 	{
 		int x = rand() % (int)vsize.x;
@@ -66,13 +70,14 @@ void starfield_create(square *bounds,int density)
 		star_field_list = jnx_list_init();
 	}
 	int count;
-	sfTexture *texture = sfTexture_createFromFile("res/star.png",NULL);
-
+	if(texture == NULL){
+	texture = sfTexture_createFromFile("res/star.png",NULL);
+	}
+	srand(999);
 	for(count = 0; count < density; ++count)
 	{
 		int x = rand() % (bounds->left + bounds->right);
 		int y = rand() % (bounds->top + bounds->bottom);
-
 		sfSprite *star = sfSprite_create();
 		sfSprite_setTexture(star,texture,1);
 
