@@ -87,7 +87,7 @@ int game_setup(jnx_hashmap *configuration)
 	jnx_log("Creating bounding map\n");
 	int game_bound = atoi(jnx_hash_get(configuration,"GAMEBOUNDS"));
 	cartographer_setbounds(0,game_bound,0,game_bound);
-	
+
 	int star_density = atoi(jnx_hash_get(configuration,"STARCOUNT"));
 	starfield_create(cartographer_getbounds(),star_density);
 	jnx_log("Initial setup complete\n");	
@@ -284,7 +284,6 @@ void game_run()
 				 *  Set the current view
 				 *-----------------------------------------------------------------------------*/
 				if(player != NULL){
-
 					sfView_setCenter(main_view,sfSprite_getPosition(player->sprite));
 					sfRenderWindow_setView(main_window,main_view);
 				}

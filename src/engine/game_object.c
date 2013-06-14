@@ -44,13 +44,19 @@ void game_object_update(game_object *obj, sfEvent event,sfView *view)
 		{
 			obj->rotation = obj->rotation + 0.4f;
 		}
+		sfVector2f size = sfView_getSize(view);
 		if(sfKeyboard_isKeyPressed(sfKeyZ))
 		{
+			if(size.x > 1000){
 			sfView_zoom(view,.9f);
+		
+			}
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyX))
 		{
+			if(size.x < 10000){
 			sfView_zoom(view,1.1f);
+			}
 		}
 		if(sfKeyboard_isKeyPressed(sfKeyTab))
 		{
