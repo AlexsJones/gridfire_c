@@ -311,9 +311,6 @@ void game_run()
 						if(strcmp(obj->object_type,"player") == 0)
 						{
 							game_object_update(obj,current_event,main_view);				
-							sfVector2f pos = sfSprite_getPosition(obj->sprite);
-
-							printf("Current player pos %g %g \n",pos.x,pos.y);
 						}
 						else
 						{

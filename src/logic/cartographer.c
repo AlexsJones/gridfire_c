@@ -82,8 +82,6 @@ jnx_list *cartographer_get_at(sfView *view)
 }
 void cartographer_setbounds(int top, int bottom, int left, int right)
 {
-
-	printf("Setting bounds TOP %d BOTTOM %d LEFT %d RIGHT %d\n",top,bottom,left,right);
 	bounds_map = malloc(sizeof(square));
 	bounds_map->top = top;
 	bounds_map->bottom = bottom;

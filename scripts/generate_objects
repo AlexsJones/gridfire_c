@@ -33,8 +33,8 @@ do
 			echo "Fuelling cruisers..."
 			for ((n = 0; n<$ENEMY_NUMBER;n++))
 			do
-				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
-				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -43,8 +43,8 @@ do
 			echo "Buliding tankers..."
 			for ((n = 0; n<$ENEMY_NUMBER;n++))
 			do
-				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
-				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -53,8 +53,8 @@ do
 			echo "Arming battlecruisers..."
 			for ((n = 0; n<$ENEMY_NUMBER /2;n++))
 			do
-				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
-				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -63,8 +63,8 @@ do
 			echo "Polishing battleships..."
 			for ((n = 0; n<$ENEMY_NUMBER /4;n++))
 			do
-				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
-				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
 				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $new_enemy >> $CONF_PATH
 			done	
@@ -76,8 +76,8 @@ do
 			echo $num_health
 			for ((n = 0; n<$num_health;n++))
 			do
-				POSX=`echo $RANDOM % $MAPSIZE + 1 | bc`
-				POSY=`echo $RANDOM % $MAPSIZE + 1 | bc`
+				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
 				health_cargo=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
 				echo $health_cargo >> $CONF_PATH
 			done
