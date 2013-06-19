@@ -262,12 +262,13 @@ void game_run()
 				current_time = sfTime_asSeconds(time);
 				sfRenderWindow_pollEvent(main_window,&current_event);
 				
+				/*-----------------------------------------------------------------------------
+				 *  Slowly zoom in as we start the level
+				 *-----------------------------------------------------------------------------*/
 				if(sfView_getSize(main_view).x > videomode.width)
 				{
 					sfView_zoom(main_view,0.99f);
 				}
-				
-				
 				switch(current_event.key.code)
 				{
 					case sfKeyEscape:
@@ -447,6 +448,9 @@ void game_run()
 					sfVector2f size = sfView_getSize(main_view);
 					size.x = size.x *2;
 					size.y = size.y *2;
+					/*-----------------------------------------------------------------------------
+					 *  Set the zoom a bit further out so on level start we can zoom in
+					 *-----------------------------------------------------------------------------*/
 					sfView_setSize(main_view,size);
 					current_game_state = RUNNING;
 					printf("Loading done\n");	
@@ -473,7 +477,6 @@ void game_run()
 				sfRenderWindow_display(main_window);
 				break;
 		}
-
 	}
 }
 void game_end(void)

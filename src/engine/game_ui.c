@@ -66,21 +66,18 @@ int game_ui_setup(sfRenderWindow *main_window, sfView *main_view)
 	/*-----------------------------------------------------------------------------
 	 *  Player kill count
 	 *-----------------------------------------------------------------------------*/
-	current_kill_count = game_ui_text_builder("", newpos,sfColor_fromRGB(255,0,0),sfTextRegular, 15);
+	current_kill_count = game_ui_text_builder("", newpos,sfColor_fromRGB(255,255,255),sfTextRegular, 15);
 
 	/*-----------------------------------------------------------------------------
 	 *  Current level ui
 	 *-----------------------------------------------------------------------------*/
 	newpos.y = newpos.y + 20;
-	current_level_count = game_ui_text_builder("",newpos,sfColor_fromRGB(255,0,0),sfTextRegular,15);
+	current_level_count = game_ui_text_builder("",newpos,sfColor_fromRGB(255,255,255),sfTextRegular,15);
 	jnx_log("Created game ui\n");
-
-
 	/*-----------------------------------------------------------------------------
 	 *  Setup the radar
 	 *-----------------------------------------------------------------------------*/
 	radar_setup();
-
 	return 0;
 }
 void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *player,jnx_list *draw_queue)
