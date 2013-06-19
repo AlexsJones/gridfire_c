@@ -42,10 +42,8 @@ sfVector2f radar_position_translation(sfVector2f realworld_position)
 	radar_bounds.bottom = radar_position.y + radar_size.y;
 
 	sfVector2f newposition;
-
 	newposition.x = realworld_position.x / radar_size.x + radar_position.x;
 	newposition.y = realworld_position.y / radar_size.y + radar_position.y;
-
 	realworld_position = newposition;
 
 	return realworld_position;

@@ -80,7 +80,6 @@ int game_setup(jnx_hashmap *configuration)
 	view_size.x = videomode.width;
 	view_size.y = videomode.height;
 	sfView_setSize(main_view,view_size);
-
 	clear_color = sfColor_fromRGB(0,0,0);
 	jnx_log("Creating game _clock\n");
 	_clock = sfClock_create();
@@ -262,6 +261,13 @@ void game_run()
 				time = sfClock_getElapsedTime(_clock);
 				current_time = sfTime_asSeconds(time);
 				sfRenderWindow_pollEvent(main_window,&current_event);
+				
+				if(sfView_getSize(main_view).x > videomode.width)
+				{
+					sfView_zoom(main_view,0.99f);
+				}
+				
+				
 				switch(current_event.key.code)
 				{
 					case sfKeyEscape:
@@ -438,6 +444,10 @@ void game_run()
 					viewpos.x = game_bound /2;
 					viewpos.y = game_bound /2;
 					sfView_setCenter(main_view,viewpos);
+					sfVector2f size = sfView_getSize(main_view);
+					size.x = size.x *2;
+					size.y = size.y *2;
+					sfView_setSize(main_view,size);
 					current_game_state = RUNNING;
 					printf("Loading done\n");	
 					break;
