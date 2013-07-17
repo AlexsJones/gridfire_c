@@ -26,30 +26,26 @@ sfRectangleShape *radar_background;
 sfTexture *radar_blip_texture;
 sfTexture *radar_blip_texture_player;
 sfSprite *radar_blip;
-
+int game_bounds = NULL;
 jnx_list *blip_list;
 
 sfVector2f radar_position_translation(sfVector2f realworld_position)
 {
-	//translate the object's ingame position to something in the radar
-	//radar bounds
 	sfVector2f radar_size = sfRectangleShape_getSize(radar_background);
 	sfVector2f radar_position = sfRectangleShape_getPosition(radar_background);
-	square radar_bounds;
-	radar_bounds.left = radar_position.x;
-	radar_bounds.right = radar_position.x  + radar_size.x;
-	radar_bounds.top = radar_position.y;
-	radar_bounds.bottom = radar_position.y + radar_size.y;
-
 	sfVector2f newposition;
-	newposition.x = realworld_position.x / radar_size.x + radar_position.x;
-	newposition.y = realworld_position.y / radar_size.y + radar_position.y;
+	
+	newposition.x = realworld_position.x / game_bounds * radar_size.x + radar_position.x;
+	newposition.y = realworld_position.y / game_bounds * radar_size.y + radar_position.x;
 	realworld_position = newposition;
-
+	/*-----------------------------------------------------------------------------
+	 *  Seems to be a bug occuring where the X right and Y bottom in the game does not correspond to the representation on the radar
+	 *-----------------------------------------------------------------------------*/
 	return realworld_position;
 }
 sfSprite *radar_blip_from_object(game_object *obj)
 {
+	if(!obj->sprite) { return NULL; }
 	sfSprite *objsprite = sfSprite_create();
 	sfVector2u texture_origin;
 
@@ -86,6 +82,8 @@ void radar_setup(void)
 	sfRectangleShape_setSize(radar_background,radar_size);
 	radar_blip_texture= sfTexture_createFromFile("res/radar_blip.png",NULL);
 	radar_blip_texture_player= sfTexture_createFromFile("res/radar_blip_player.png",NULL);
+	game_bounds = atoi(jnx_hash_get(config,"GAMEBOUNDS"));
+	assert(game_bounds);
 }
 void radar_update(sfView *view,sfRenderWindow *main_window)
 {
@@ -97,6 +95,11 @@ void radar_update(sfView *view,sfRenderWindow *main_window)
 
 	sfRectangleShape_setPosition(radar_background,radar_background_pos);	
 }
+
+
+/*-----------------------------------------------------------------------------
+ *  There is a bug here that needs to be fully resolved where a game object is destroyed whilst the radar_draw is attempting to get the object position
+ *-----------------------------------------------------------------------------*/
 void radar_draw(sfRenderWindow *main_window,jnx_list *draw_queue)
 {
 	sfRenderWindow_drawRectangleShape(main_window,radar_background,NULL);
@@ -105,10 +108,14 @@ void radar_draw(sfRenderWindow *main_window,jnx_list *draw_queue)
 	while(draw_queue_head)
 	{
 		game_object *current_obj = draw_queue_head->_data;
+		if(current_obj)
+		{
 		sfSprite *obj_blip = radar_blip_from_object(current_obj);
-
+		if(obj_blip != NULL){
 		sfRenderWindow_drawSprite(main_window,obj_blip,NULL);
 		sfSprite_destroy(obj_blip);
+		}
+		}
 		draw_queue_head = draw_queue_head->next_node;
 	}
 }

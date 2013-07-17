@@ -133,7 +133,6 @@ int game_setup(jnx_hashmap *configuration)
 	{
 		return 1;
 	}
-
 	/*-----------------------------------------------------------------------------
 	 *  Set game state to running
 	 *-----------------------------------------------------------------------------*/
@@ -261,14 +260,14 @@ void game_run()
 				time = sfClock_getElapsedTime(_clock);
 				current_time = sfTime_asSeconds(time);
 				sfRenderWindow_pollEvent(main_window,&current_event);
-				
 				/*-----------------------------------------------------------------------------
 				 *  Slowly zoom in as we start the level
 				 *-----------------------------------------------------------------------------*/
-				if(sfView_getSize(main_view).x > videomode.width)
+			/*  	if(sfView_getSize(main_view).x > videomode.width)
 				{
 					sfView_zoom(main_view,0.99f);
 				}
+			*/
 				switch(current_event.key.code)
 				{
 					case sfKeyEscape:
@@ -305,8 +304,6 @@ void game_run()
 				 *-----------------------------------------------------------------------------*/
 				jnx_list *draw_queue = cartographer_get_at(main_view);
 				if(draw_queue != NULL){
-
-
 					jnx_node *current_draw_pos = draw_queue->head; 
 					/*-----------------------------------------------------------------------------
 					 *  Draw weapon fire
@@ -451,7 +448,7 @@ void game_run()
 					/*-----------------------------------------------------------------------------
 					 *  Set the zoom a bit further out so on level start we can zoom in
 					 *-----------------------------------------------------------------------------*/
-					sfView_setSize(main_view,size);
+				//	sfView_setSize(main_view,size);
 					current_game_state = RUNNING;
 					printf("Loading done\n");	
 					break;

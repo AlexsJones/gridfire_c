@@ -143,7 +143,8 @@ jnx_list* config_parser_load_configuration(char *path)
 	/*-----------------------------------------------------------------------------
 	 *  Read our configuration into a malloc'd array
 	 *-----------------------------------------------------------------------------*/
-	char *buffer = jnx_file_read(path);
+	char *buffer;
+    size_t bytes_read = jnx_file_read(path,&buffer);
 	char *buffer_walk = buffer;	
 	while(*buffer_walk != '\0')
 	{

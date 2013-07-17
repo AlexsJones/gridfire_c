@@ -108,8 +108,6 @@ void game_ui_update(sfRenderWindow *main_window, sfView *view, game_object *play
 	sfText_setString(current_level_count,levelbuf);
 	newpos.y = newpos.y + 20;
 	sfText_setPosition(current_level_count,newpos);
-
-
 	/*-----------------------------------------------------------------------------
 	 *  Update radar
 	 *-----------------------------------------------------------------------------*/
