@@ -26,7 +26,7 @@ sfRectangleShape *radar_background;
 sfTexture *radar_blip_texture;
 sfTexture *radar_blip_texture_player;
 sfSprite *radar_blip;
-int game_bounds = NULL;
+int game_bounds = 0;
 jnx_list *blip_list;
 
 sfVector2f radar_position_translation(sfVector2f realworld_position)

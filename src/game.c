@@ -61,8 +61,8 @@ game_state current_game_state;
 /*-----------------------------------------------------------------------------
  *  Keeping track of current level and game position
  *-----------------------------------------------------------------------------*/
-int max_levels = NULL;
-int current_level = NULL;
+int max_levels = 0;
+int current_level = 0;
 
 int game_setup(jnx_hashmap *configuration)
 {
