@@ -70,7 +70,7 @@ int game_setup(jnx_hashmap *configuration)
 	config = configuration;
 	assert(config);
 	videomode = sfVideoMode_getDesktopMode();
-	jnx_log("Video mode is %d %d\n",videomode.width,videomode.height);	
+	JNX_LOGC(JLOG_NORMAL,"Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
 	int max_fps = atoi(jnx_hash_get(config,"MAXFPS"));
 	assert(max_fps);
@@ -81,15 +81,15 @@ int game_setup(jnx_hashmap *configuration)
 	view_size.y = videomode.height;
 	sfView_setSize(main_view,view_size);
 	clear_color = sfColor_fromRGB(0,0,0);
-	jnx_log("Creating game _clock\n");
+	JNX_LOGC(JLOG_NORMAL,"Creating game _clock\n");
 	_clock = sfClock_create();
-	jnx_log("Creating bounding map\n");
+	JNX_LOGC(JLOG_NORMAL,"Creating bounding map\n");
 	int game_bound = atoi(jnx_hash_get(configuration,"GAMEBOUNDS"));
 	cartographer_setbounds(0,game_bound,0,game_bound);
 
 	int star_density = atoi(jnx_hash_get(configuration,"STARCOUNT"));
 	starfield_create(cartographer_getbounds(),star_density);
-	jnx_log("Initial setup complete\n");	
+	JNX_LOGC(JLOG_NORMAL,"Initial setup complete\n");	
 	/*-----------------------------------------------------------------------------
 	 *  Game text
 	 *-----------------------------------------------------------------------------*/
@@ -143,7 +143,7 @@ void *game_load(void *args)
 {
 	char *configuration_path = GAMECONFIGURATION;
 	loading_flag = 0;
-	jnx_log("Starting game_load\n");	
+	JNX_LOGC(JLOG_NORMAL,"Starting game_load\n");	
 	/*-----------------------------------------------------------------------------
 	 *  Perform object loading
 	 *-----------------------------------------------------------------------------*/
@@ -163,18 +163,18 @@ void *game_load(void *args)
 		cartographer_add(obj);
 		head = head->next_node;
 	}
-	jnx_list_delete(configuration_list);
+	jnx_list_destroy(&configuration_list);
 	head = NULL;
 	if(player == NULL)
 	{
-		jnx_log("Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
+		JNX_LOGC(JLOG_NORMAL,"Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
 		exit(0);
 	}
 	/*-----------------------------------------------------------------------------
 	 *  Start results
 	 *-----------------------------------------------------------------------------*/
 
-	jnx_log("Done\n");
+	JNX_LOGC(JLOG_NORMAL,"Done\n");
 	loading_flag = 1;
 }
 void game_setup_next_level()
@@ -192,7 +192,7 @@ void game_setup_next_level()
 }
 void game_run()
 {
-	jnx_log("Starting run loop\n");
+	JNX_LOGC(JLOG_NORMAL,"Starting run loop\n");
 	sfEvent current_event;
 	sfTime time;
 	float current_time;
@@ -339,7 +339,7 @@ void game_run()
 				game_ui_update(main_window,main_view,player,draw_queue);
 				game_ui_draw(main_window,draw_queue);
 				sfRenderWindow_display(main_window);
-				jnx_list_delete(draw_queue);
+				jnx_list_destroy(&draw_queue);
 				break;
 			case GAMEOVER:
 				sfRenderWindow_clear(main_window,clear_color);	

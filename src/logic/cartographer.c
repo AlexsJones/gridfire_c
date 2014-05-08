@@ -37,12 +37,12 @@ void cartographer_clear(void)
 		free(currentobj);
 		head = head->next_node;
 	}
-	jnx_list_delete(object_list);
+	jnx_list_destroy(&object_list);
 	object_list = NULL;
 }
 void cartographer_add(game_object *obj)
 {
-	if(object_list == NULL) { object_list = jnx_list_init(); }
+	if(object_list == NULL) { object_list = jnx_list_create(); }
 	/*-----------------------------------------------------------------------------
 	 *  Temporary solution whilst I create an algorithm for search 
 	 *-----------------------------------------------------------------------------*/
@@ -61,7 +61,7 @@ jnx_list *cartographer_get_at(sfView *view)
 	int view_max_size = sfView_getSize(view).x;
 	jnx_node *head = object_list->head;
 	jnx_node *head_reset = head;
-	jnx_list *temp_list = jnx_list_init();	
+	jnx_list *temp_list = jnx_list_create();	
 	int count = 0;
 	while(head)
 	{
@@ -87,11 +87,11 @@ void cartographer_setbounds(int top, int bottom, int left, int right)
 	bounds_map->bottom = bottom;
 	bounds_map->left = left;
 	bounds_map->right = right;
-	jnx_log("Set new bounds map\n");
+	JNX_LOGC(JLOG_NORMAL,"Set new bounds map\n");
 }
 square *cartographer_getbounds(void)
 {
-	if(bounds_map == NULL) { jnx_log("Error getting bounds - no map set\n");return NULL; }
+	if(bounds_map == NULL) { JNX_LOGC(JLOG_NORMAL,"Error getting bounds - no map set\n");return NULL; }
 	return bounds_map;
 }
 void cartographer_update()
@@ -101,7 +101,7 @@ void cartographer_update()
 	 *  Warning, may slow down game loop if there are alot of objects here
 	 *-----------------------------------------------------------------------------*/
 	jnx_node *head = object_list->head;
-	jnx_list *new_draw = jnx_list_init();
+	jnx_list *new_draw = jnx_list_create();
 	while(head)
 	{
 		game_object *current = head->_data;
@@ -119,7 +119,7 @@ void cartographer_update()
 				 *-----------------------------------------------------------------------------*/
 				game_end();	
 			}
-			jnx_log("Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
+			JNX_LOGC(JLOG_NORMAL,"Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
 			//remove the object
 			play_sound(sound_lexplosion);
 

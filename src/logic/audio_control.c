@@ -59,7 +59,7 @@ void play_music(music_type m)
 {
 	if(strcmp(jnx_hash_get(config,"MUSIC"),"OFF") == 0)
 	{
-		jnx_log("Music has been disabled\n");
+		JNX_LOGC(JLOG_NORMAL,"Music has been disabled\n");
 		return;
 	}
 

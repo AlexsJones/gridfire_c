@@ -31,7 +31,7 @@ jnx_list *starfield_menu_create(sfView *view)
 {
 	
 	if(menu_starfield != NULL) { return menu_starfield; };
-	menu_starfield = jnx_list_init();
+	menu_starfield = jnx_list_create();
 	int density = 1000;
 	sfVector2f vsize = sfView_getSize(view);
 	srand(time(NULL));
@@ -67,7 +67,7 @@ void starfield_create(square *bounds,int density)
 	srand(time(NULL));
 	if(star_field_list == NULL)
 	{
-		star_field_list = jnx_list_init();
+		star_field_list = jnx_list_create();
 	}
 	int count;
 	if(texture == NULL){

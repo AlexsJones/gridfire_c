@@ -64,7 +64,7 @@ void weapon_fire(game_object *parent/*  more to come i.e weapon type, speed etc.
 {
 	if(weapon_shot_list == NULL)
 	{
-		weapon_shot_list = jnx_list_init();
+		weapon_shot_list = jnx_list_create();
 	}
 	weapon_shot *weapon_shot = malloc(sizeof(weapon_shot));
 	sfTexture *texture;
@@ -168,10 +168,10 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 {
 	if(weapon_shot_list == NULL)
 	{
-		weapon_shot_list = jnx_list_init();
+		weapon_shot_list = jnx_list_create();
 	}
 	jnx_node *head = weapon_shot_list->head;
-	jnx_list *temp = jnx_list_init();
+	jnx_list *temp = jnx_list_create();
 	sfVector2f view_pos = sfView_getCenter(view);
 	sfVector2f view_size = sfView_getSize(view);
 	square *view_bounds = malloc(sizeof(square));
@@ -203,6 +203,6 @@ void weapon_draw(sfRenderWindow *window,sfView *view, jnx_list **draw_queue)
 		head = head->next_node;
 	}
 	free(view_bounds);
-	jnx_list_delete(weapon_shot_list);
+	jnx_list_destroy(&weapon_shot_list);
 	weapon_shot_list = temp;
 }
