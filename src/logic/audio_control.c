@@ -23,7 +23,7 @@
 /*-----------------------------------------------------------------------------
  *  External ref to the configuration
  *-----------------------------------------------------------------------------*/
-extern jnx_hashmap *config;
+extern jnx_hashmap *config ;
 sfSound *audio_control_build_sound(char *path)
 {
 	sfSoundBuffer *buffer = sfSoundBuffer_createFromFile(path);
@@ -31,7 +31,7 @@ sfSound *audio_control_build_sound(char *path)
 	sfSound_setBuffer(sound,buffer);
 	return sound;
 }
-void audio_control_setup(void)
+void audio_control_setup(jnx_hashmap *configuration) 
 {
 	sound_lexplosion = audio_control_build_sound("res/lexplosion.flac");
 	assert(sound_lexplosion);
@@ -54,10 +54,13 @@ void audio_control_setup(void)
 	assert(title_music);
 	game_music = sfMusic_createFromFile("res/gravity_time.flac");
 	assert(game_music);
+	config = configuration;
 }
 void play_music(music_type m)
 {
-	if(strcmp(jnx_hash_get(config,"MUSIC"),"OFF") == 0)
+	char *music = jnx_hash_get(config,"MUSIC");
+		assert(music);
+	if(strcmp(music,"OFF") == 0)
 	{
 		JNX_LOGC(JLOG_NORMAL,"Music has been disabled\n");
 		return;

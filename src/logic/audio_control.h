@@ -22,7 +22,7 @@
 typedef enum { TITLEMUSIC, INGAMEMUSIC }music_type;
 void play_music(music_type m);
 void play_sound(sfSound *sound);
-void audio_control_setup(void);
+void audio_control_setup(jnx_hashmap *configuration);
 /*-----------------------------------------------------------------------------
  *  weapon sounds
  *-----------------------------------------------------------------------------*/

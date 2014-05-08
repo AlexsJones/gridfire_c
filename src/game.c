@@ -127,7 +127,7 @@ int game_setup(jnx_hashmap *configuration)
 	/*-----------------------------------------------------------------------------
 	 *  Load ingame music
 	 *-----------------------------------------------------------------------------*/
-	audio_control_setup();
+	audio_control_setup(configuration);
 	play_music(TITLEMUSIC);
 	if(game_ui_setup(main_window,main_view) != 0)
 	{

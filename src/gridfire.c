@@ -28,6 +28,14 @@
 jnx_hashmap *create_configuration()
 {
 	jnx_hashmap *map = jnx_file_read_kvp(GAMESETTINGS,1024,"=");
+	const char **keys;
+
+	int count = jnx_hash_get_keys_ts(map,&keys);	
+	int x;
+	for(x=0;x<count; ++x) {
+		char *value = jnx_hash_get(map,keys[x]);
+		JNX_LOGC(JLOG_NORMAL,"Map [Key: %s][Value: %s]\n",keys[x],value);
+	}
 	return map;
 }
 int main(int argc, char **argv)
