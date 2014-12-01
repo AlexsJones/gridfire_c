@@ -62,7 +62,7 @@ void play_music(music_type m)
 		assert(music);
 	if(strcmp(music,"OFF") == 0)
 	{
-		JNX_LOGC(JLOG_NORMAL,"Music has been disabled\n");
+		JNX_LOG(NULL,"Music has been disabled\n");
 		return;
 	}
 

@@ -87,11 +87,11 @@ void cartographer_setbounds(int top, int bottom, int left, int right)
 	bounds_map->bottom = bottom;
 	bounds_map->left = left;
 	bounds_map->right = right;
-	JNX_LOGC(JLOG_NORMAL,"Set new bounds map\n");
+	JNX_LOG(NULL,"Set new bounds map\n");
 }
 square *cartographer_getbounds(void)
 {
-	if(bounds_map == NULL) { JNX_LOGC(JLOG_NORMAL,"Error getting bounds - no map set\n");return NULL; }
+	if(bounds_map == NULL) { JNX_LOG(NULL,"Error getting bounds - no map set\n");return NULL; }
 	return bounds_map;
 }
 void cartographer_update()
@@ -119,7 +119,7 @@ void cartographer_update()
 				 *-----------------------------------------------------------------------------*/
 				game_end();	
 			}
-			JNX_LOGC(JLOG_NORMAL,"Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
+			JNX_LOG(NULL,"Object %s at %g %g has been removed as health was %d\n", current->object_type,current->position.x, current->position.y, current->health);
 			//remove the object
 			play_sound(sound_lexplosion);
 

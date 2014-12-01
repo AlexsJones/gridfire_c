@@ -34,7 +34,7 @@ jnx_hashmap *create_configuration()
 	int x;
 	for(x=0;x<count; ++x) {
 		char *value = jnx_hash_get(map,keys[x]);
-		JNX_LOGC(JLOG_NORMAL,"Map [Key: %s][Value: %s]\n",keys[x],value);
+		JNX_LOG(NULL,"Map [Key: %s][Value: %s]\n",keys[x],value);
 	}
 	return map;
 }
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	 *  Very important to note that XInitThreads is a linux implementation only
 	 *-----------------------------------------------------------------------------*/
 	XInitThreads();
-	JNX_LOGC(JLOG_NORMAL,"Starting game setup\n");	
+	JNX_LOG(NULL,"Starting game setup\n");	
 
 	jnx_hashmap *config = create_configuration();
 	

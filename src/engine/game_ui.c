@@ -33,7 +33,7 @@ sfText *game_ui_text_builder(char *string, sfVector2f position, sfColor color,sf
 	if(game_ui_font == NULL)
 	{
 		game_ui_font = sfFont_createFromFile(FONTPATH);
-		if(game_ui_font == NULL) { JNX_LOGC(JLOG_NORMAL,"Critical error loading game font, exiting!\n"); exit(1); };
+		if(game_ui_font == NULL) { JNX_LOG(NULL,"Critical error loading game font, exiting!\n"); exit(1); };
 	}
 	sfText_setFont(temp,game_ui_font);
 	sfText_setString(temp,string);
@@ -73,7 +73,7 @@ int game_ui_setup(sfRenderWindow *main_window, sfView *main_view)
 	 *-----------------------------------------------------------------------------*/
 	newpos.y = newpos.y + 20;
 	current_level_count = game_ui_text_builder("",newpos,sfColor_fromRGB(255,255,255),sfTextRegular,15);
-	JNX_LOGC(JLOG_NORMAL,"Created game ui\n");
+	JNX_LOG(NULL,"Created game ui\n");
 	/*-----------------------------------------------------------------------------
 	 *  Setup the radar
 	 *-----------------------------------------------------------------------------*/

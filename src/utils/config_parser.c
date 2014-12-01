@@ -138,7 +138,7 @@ game_object* process_line(char *line)
 }
 jnx_list* config_parser_load_configuration(char *path)
 {
-	JNX_LOGC(JLOG_NORMAL,"config_parser_load_configuration working\n");
+	JNX_LOG(NULL,"config_parser_load_configuration working\n");
 	jnx_list *config_list = jnx_list_create();
 	/*-----------------------------------------------------------------------------
 	 *  Read our configuration into a malloc'd array
@@ -173,6 +173,6 @@ jnx_list* config_parser_load_configuration(char *path)
 		*buffer_walk++;
 	}
 	free(buffer);
-	JNX_LOGC(JLOG_NORMAL,"Loaded from configuration file\n");
+	JNX_LOG(NULL,"Loaded from configuration file\n");
 	return config_list;
 }

@@ -70,7 +70,7 @@ int game_setup(jnx_hashmap *configuration)
 	config = configuration;
 	assert(config);
 	videomode = sfVideoMode_getDesktopMode();
-	JNX_LOGC(JLOG_NORMAL,"Video mode is %d %d\n",videomode.width,videomode.height);	
+	JNX_LOG(NULL,"Video mode is %d %d\n",videomode.width,videomode.height);	
 	main_window = sfRenderWindow_create(videomode,"Gridfire",sfDefaultStyle,NULL);
 	int max_fps = atoi(jnx_hash_get(config,"MAXFPS"));
 	assert(max_fps);
@@ -81,15 +81,15 @@ int game_setup(jnx_hashmap *configuration)
 	view_size.y = videomode.height;
 	sfView_setSize(main_view,view_size);
 	clear_color = sfColor_fromRGB(0,0,0);
-	JNX_LOGC(JLOG_NORMAL,"Creating game _clock\n");
+	JNX_LOG(NULL,"Creating game _clock\n");
 	_clock = sfClock_create();
-	JNX_LOGC(JLOG_NORMAL,"Creating bounding map\n");
+	JNX_LOG(NULL,"Creating bounding map\n");
 	int game_bound = atoi(jnx_hash_get(configuration,"GAMEBOUNDS"));
 	cartographer_setbounds(0,game_bound,0,game_bound);
 
 	int star_density = atoi(jnx_hash_get(configuration,"STARCOUNT"));
 	starfield_create(cartographer_getbounds(),star_density);
-	JNX_LOGC(JLOG_NORMAL,"Initial setup complete\n");	
+	JNX_LOG(NULL,"Initial setup complete\n");	
 	/*-----------------------------------------------------------------------------
 	 *  Game text
 	 *-----------------------------------------------------------------------------*/
@@ -143,7 +143,7 @@ void *game_load(void *args)
 {
 	char *configuration_path = GAMECONFIGURATION;
 	loading_flag = 0;
-	JNX_LOGC(JLOG_NORMAL,"Starting game_load\n");	
+	JNX_LOG(NULL,"Starting game_load\n");	
 	/*-----------------------------------------------------------------------------
 	 *  Perform object loading
 	 *-----------------------------------------------------------------------------*/
@@ -167,14 +167,14 @@ void *game_load(void *args)
 	head = NULL;
 	if(player == NULL)
 	{
-		JNX_LOGC(JLOG_NORMAL,"Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
+		JNX_LOG(NULL,"Could not find the player from the loaded configuration file!\n Cannot have a game without a player\n");
 		exit(0);
 	}
 	/*-----------------------------------------------------------------------------
 	 *  Start results
 	 *-----------------------------------------------------------------------------*/
 
-	JNX_LOGC(JLOG_NORMAL,"Done\n");
+	JNX_LOG(NULL,"Done\n");
 	loading_flag = 1;
 }
 void game_setup_next_level()
@@ -192,7 +192,7 @@ void game_setup_next_level()
 }
 void game_run()
 {
-	JNX_LOGC(JLOG_NORMAL,"Starting run loop\n");
+	JNX_LOG(NULL,"Starting run loop\n");
 	sfEvent current_event;
 	sfTime time;
 	float current_time;
