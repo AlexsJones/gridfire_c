@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 2.8)
+set(CMAKE_INSTALL_PREFIX /usr)
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
+include(cotire)
+project(gridfire)
+
+file(GLOB SRC "src/**/*.c")
+file(GLOB ROOT_SRC "src/*.c")
+set(CMAKE_C_FLAGS "-I/usr/X11R6/include -L/usr/X11R6/lib -w")
+add_executable(gridfire ${SRC} ${ROOT_SRC})
+cotire(gridfire)
+install(TARGETS gridfire DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+target_link_libraries(gridfire -lcsfml-network -lcsfml-system -lcsfml-window -lcsfml-window -lcsfml-graphics -lcsfml-audio -ljnxc -g -lX11)
