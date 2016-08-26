@@ -17,7 +17,7 @@
  */
 #ifndef __CONFIG_PARSER_H__
 #define __CONFIG_PARSER_H__
-#include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnx_list.h>
 #include "../engine/game_object.h"
 jnx_list* config_parser_load_configuration(char *path);
 #endif

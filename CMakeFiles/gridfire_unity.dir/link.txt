@@ -1,0 +1,1 @@
+/usr/bin/cc  -I/usr/X11R6/include -L/usr/X11R6/lib -w   CMakeFiles/gridfire_unity.dir/cotire/gridfire_C_unity.c.o  -o gridfire -rdynamic 

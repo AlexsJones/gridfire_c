@@ -21,31 +21,31 @@
 
 float geometry_distance(sfVector2f a,sfVector2f b)
 {
-	float k= sqrt((float)((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y)));
-	return k;
+  float k= sqrt((float)((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y)));
+  return k;
 }
 int geometry_contains(square *container,sfVector2f position)
 {
-	int x_flag = 0;
-	int y_flag = 0;
+  int x_flag = 0;
+  int y_flag = 0;
 
-	
-	int posx = position.x;
-	int posy = position.y;
 
-	if(posx < container->right && posx > container->left)
-	{
-		x_flag = 1;
-	}
-	if(posy < container->bottom && posy > container->top)
-	{
-		y_flag = 1;
-	}
+  int posx = position.x;
+  int posy = position.y;
 
-	if(x_flag == 1 && y_flag == 1)
-	{
-		return 1;
-	}
+  if(posx < container->right && posx > container->left)
+  {
+    x_flag = 1;
+  }
+  if(posy < container->bottom && posy > container->top)
+  {
+    y_flag = 1;
+  }
 
-	return 0;
+  if(x_flag == 1 && y_flag == 1)
+  {
+    return 1;
+  }
+
+  return 0;
 }

@@ -21,15 +21,15 @@
 #include <unistd.h>
 #include <math.h>
 #include "weapon_control.h"
-#include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnx_list.h>
 #include "../utils/geometry.h"
 #include "../logic/cartographer.h"
-#include <jnxc_headers/jnxlog.h>
+#include <jnxc_headers/jnx_log.h>
 #include <SFML/Audio.h>
 #include "../logic/audio_control.h"
 #include <string.h>
 #include <assert.h>
-#include <jnxc_headers/jnxhash.h>
+#include <jnxc_headers/jnx_hash.h>
 jnx_list *weapon_shot_list = NULL;
 jnx_list *temp_draw = NULL;
 #ifndef ALLOWINVUL

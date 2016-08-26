@@ -19,8 +19,8 @@
 #include "cartographer.h"
 #include <string.h>
 #include <stdio.h>
-#include <jnxc_headers/jnxlist.h>
-#include <jnxc_headers/jnxlog.h>
+#include <jnxc_headers/jnx_list.h>
+#include <jnxc_headers/jnx_log.h>
 #include "audio_control.h"
 #include "../game.h"
 #include "scoreboard.h"

@@ -18,7 +18,7 @@
 #ifndef __GAME_UI_H__
 #define __GAME_UI_H__
 #include <SFML/Graphics.h>
-#include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnx_list.h>
 #include "game_object.h"
 #include "../logic/cartographer.h"
 #include "../logic/scoreboard.h"

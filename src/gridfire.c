@@ -19,9 +19,9 @@
 #include <string.h>
 #include <stdio.h>
 #include "game.h"
-#include <jnxc_headers/jnxlog.h>
-#include <jnxc_headers/jnxfile.h>
-#include <jnxc_headers/jnxhash.h>
+#include <jnxc_headers/jnx_log.h>
+#include <jnxc_headers/jnx_file.h>
+#include <jnxc_headers/jnx_hash.h>
 #define GAMESETTINGS "conf/settings.conf"
 #define GAMELOG "log/game.log"
 #include <X11/Xlib.h>

@@ -23,8 +23,8 @@
 #include "engine/weapon_control.h"
 #include "logic/game_ai.h"
 #include "utils/config_parser.h"
-#include <jnxc_headers/jnxlog.h>
-#include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnx_log.h>
+#include <jnxc_headers/jnx_list.h>
 #include <string.h>
 #include <stdio.h>
 #include "engine/game_ui.h"

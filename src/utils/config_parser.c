@@ -19,8 +19,8 @@
 #include "config_parser.h"
 #include <string.h>
 #include <stdio.h>
-#include <jnxc_headers/jnxlog.h>
-#include <jnxc_headers/jnxfile.h>
+#include <jnxc_headers/jnx_log.h>
+#include <jnxc_headers/jnx_file.h>
 
 enum instruction_type { OBJECT_TYPE, TEXTURE_DATA, LOC_X, LOC_Y,MAXSPEED, HEALTH, ROTATION,VELOCITY,WEAPON_DAMAGE,WEAPON_TYPE } instruction_type;
 char *strip_newline(char *s)

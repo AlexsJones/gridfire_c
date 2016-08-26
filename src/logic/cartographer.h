@@ -19,7 +19,7 @@
 #define __CARTOGRAPHER_H__
 #include "../engine/game_object.h"
 #include "../utils/geometry.h"
-#include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnx_list.h>
 
 void cartographer_setbounds(int top, int bottom, int left, int right);
 square *cartographer_getbounds(void);

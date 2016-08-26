@@ -18,7 +18,7 @@
 #ifndef __RADAR_H__
 #define __RADAR_H__
 #include <SFML/Graphics.h>
-#include <jnxc_headers/jnxlist.h>
+#include <jnxc_headers/jnx_list.h>
 void radar_setup(void);
 void radar_update(sfView *view,sfRenderWindow *main_window);
 void radar_draw(sfRenderWindow *main_window,jnx_list *draw_queue);

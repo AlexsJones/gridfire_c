@@ -18,7 +18,7 @@
 #ifndef __AUDIO_CONTROL_H__
 #define __AUDIO_CONTROL_H__
 #include <SFML/Audio.h>
-#include <jnxc_headers/jnxhash.h>
+#include <jnxc_headers/jnx_hash.h>
 typedef enum { TITLEMUSIC, INGAMEMUSIC }music_type;
 void play_music(music_type m);
 void play_sound(sfSound *sound);
