@@ -1,3 +1,5 @@
+CMakeFiles
+*.cmake
 *kate-swp
 *.dSYM
 log/game.log
