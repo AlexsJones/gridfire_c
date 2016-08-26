@@ -6,81 +6,81 @@ MAPSIZE=$1
 ENEMY_NUMBER=$2
 
 if [ -a $CONF_PATH ]; then
-	rm $CONF_PATH
+  rm $CONF_PATH
 fi
 if [ -z "$MAPSIZE" ] || [ -z "$ENEMY_NUMBER" ]; then
-	echo "Please input [Map size] [Enemy number]"
-	exit 1
+  echo "Please input [Map size] [Enemy number]"
+  exit 1
 fi
 cat conf/template.conf | while IFS="" read -r LINE
 do
-	object_type=`echo $LINE | cut -d '{' -f2 | cut -d ',' -f1`
-	echo "Object type $object_type"
-	case "$object_type" in
+  object_type=`echo $LINE | cut -d '{' -f2 | cut -d ',' -f1`
+  echo "Object type $object_type"
+  case "$object_type" in
 
-		player)
-			POSX=$(($MAPSIZE/2))
-			POSY=$(($MAPSIZE/2))
-				echo "Player position is $POSX $POSY"
-				player=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
-				echo $player >> $CONF_PATH	
-			;;
-		enemy) 
-			obj_image=`echo $LINE | cut -d '{' -f2 | cut -d ',' -f2`
-			case "$obj_image" in
+    player)
+      POSX=$(($MAPSIZE/2))
+      POSY=$(($MAPSIZE/2))
+      echo "Player position is $POSX $POSY"
+      player=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+      echo $player >> $CONF_PATH	
+      ;;
+    enemy) 
+      obj_image=`echo $LINE | cut -d '{' -f2 | cut -d ',' -f2`
+      case "$obj_image" in
 
-			res/cruiser.png)
-			echo "Fuelling cruisers..."
-			for ((n = 0; n<$ENEMY_NUMBER;n++))
-			do
-				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
-				echo $new_enemy >> $CONF_PATH
-			done	
-				;;
-			res/tanker.png)
-			echo "Buliding tankers..."
-			for ((n = 0; n<$ENEMY_NUMBER;n++))
-			do
-				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
-				echo $new_enemy >> $CONF_PATH
-			done	
-				;;
-			res/battlecruiser.png)
-			echo "Arming battlecruisers..."
-			for ((n = 0; n<$ENEMY_NUMBER /2;n++))
-			do
-				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
-				echo $new_enemy >> $CONF_PATH
-			done	
-				;;
-			res/battleship.png)
-			echo "Polishing battleships..."
-			for ((n = 0; n<$ENEMY_NUMBER /4;n++))
-			do
-				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
-				echo $new_enemy >> $CONF_PATH
-			done	
-				;;	
-			esac
-			;;
-		health)
-			num_health=$(($ENEMY_NUMBER/5))
-			echo $num_health
-			for ((n = 0; n<$num_health;n++))
-			do
-				POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
-				health_cargo=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
-				echo $health_cargo >> $CONF_PATH
-			done
-			;;
-esac
+        res/cruiser.png)
+          echo "Fuelling cruisers..."
+          for ((n = 0; n<$ENEMY_NUMBER;n++))
+          do
+            POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+            echo $new_enemy >> $CONF_PATH
+          done	
+          ;;
+        res/tanker.png)
+          echo "Buliding tankers..."
+          for ((n = 0; n<$ENEMY_NUMBER;n++))
+          do
+            POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+            echo $new_enemy >> $CONF_PATH
+          done	
+          ;;
+        res/battlecruiser.png)
+          echo "Arming battlecruisers..."
+          for ((n = 0; n<$ENEMY_NUMBER /2;n++))
+          do
+            POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+            echo $new_enemy >> $CONF_PATH
+          done	
+          ;;
+        res/battleship.png)
+          echo "Polishing battleships..."
+          for ((n = 0; n<$ENEMY_NUMBER /4;n++))
+          do
+            POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+            new_enemy=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+            echo $new_enemy >> $CONF_PATH
+          done	
+          ;;	
+      esac
+      ;;
+    health)
+      num_health=$(($ENEMY_NUMBER/5))
+      echo $num_health
+      for ((n = 0; n<$num_health;n++))
+      do
+        POSX=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+        POSY=`echo $(($RANDOM *$RANDOM)) % $MAPSIZE + 1 | bc`
+        health_cargo=`echo $LINE | sed 's/\*posx\*/'$POSX'/' | sed 's/\*posy\*/'$POSY'/'`
+        echo $health_cargo >> $CONF_PATH
+      done
+      ;;
+  esac
 done
